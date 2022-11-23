@@ -22,7 +22,7 @@
 #include <tuple>
 #include <alsa/asoundlib.h>
 #include <signal.h>
-#include <spdlog/spdlog.h>
+#include "spdlog/spdlog.h"
 #include "evdevw.hpp"
 #include "Button.h"
 #include "Knob.h"

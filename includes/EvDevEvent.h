@@ -14,7 +14,7 @@
 #include "Slider.h"
 #include "Jog.h"
 #include "RtMidiHelper.h"
-#include <spdlog/spdlog.h>
+#include "spdlog/spdlog.h"
 
 using namespace std;
 class EvDevEvent {

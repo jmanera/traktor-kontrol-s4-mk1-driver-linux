@@ -3,10 +3,6 @@ project(traktor_kontrol_s4_mk1_driver_linux)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if(NOT TARGET spdlog)
-    find_package(spdlog REQUIRED)
-endif()
-
 include_directories(./classes)
 include_directories(./includes)
 
@@ -19,4 +15,3 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
 
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi)
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libevdev.so.2)
-target_link_libraries(traktor_kontrol_s4_mk1_driver_linux spdlog::spdlog)

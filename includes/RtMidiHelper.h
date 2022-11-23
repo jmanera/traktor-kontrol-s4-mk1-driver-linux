@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <string>
 #include <rtmidi/RtMidi.h>
-#include <spdlog/spdlog.h>
+#include "spdlog/spdlog.h"
 
 using namespace std;
 
