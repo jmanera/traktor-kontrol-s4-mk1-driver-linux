@@ -1,0 +1,3 @@
+/home/aspgems/Proyectos/traktor-kontrol-s4-mk1-driver-linux/cmake-build-debug/CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir
+/home/aspgems/Proyectos/traktor-kontrol-s4-mk1-driver-linux/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aspgems/Proyectos/traktor-kontrol-s4-mk1-driver-linux/cmake-build-debug/CMakeFiles/rebuild_cache.dir

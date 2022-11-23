@@ -1,0 +1,18 @@
+# ninja log v5
+4626	5183	1669152441731695480	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/Slider.cpp.o	716673a4295d29f7
+4997	5713	1669152442259693715	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/Led.cpp.o	b39ec9665b8b69b8
+1	1568	1669065566097981782	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/LogHelper.cpp.o	b627a5fc734d767
+1	2071	1669062077327763516	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/EvDevDevices.cpp.o	6806861b16a4c340
+2	4277	1669153063546900176	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/EvDevHelper.cpp.o	d62e65419900ba5e
+0	50	1669191140178260452	build.ninja	a1e5676eaacc4efc
+4439	4997	1669152441543696110	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/Knob.cpp.o	9f7870106dcd8961
+2	99	1669189586287929592	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/RtMidiEvent.cpp.o	a1ac091975a10da3
+0	363	1668699509541580442	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/DevicesHelper.cpp.o	3cbb5cfa65ab4276
+1	492	1669051774481998631	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/MidiDevices.cpp.o	749d63e478fac013
+5183	5669	1669152442215693861	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/Jog.cpp.o	e699ff3960d72ab1
+2921	6286	1669153065554875082	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/EvDevEvent.cpp.o	4231390c4d72d5a7
+2	2921	1669153062190917174	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/RtMidiHelper.cpp.o	75e9b1ad8f54e725
+4030	4625	1669152441171697357	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/classes/Button.cpp.o	7cb794c6891866a3
+0	4	0	clean	183fa230e0eb115c
+3	3892	1669153063162904984	CMakeFiles/traktor_kontrol_s4_mk1_driver_linux.dir/main.cpp.o	df7dae1f0c0c1e71
+99	581	1669189586767928563	traktor_kontrol_s4_mk1_driver_linux	6e45fc8043bb9250
