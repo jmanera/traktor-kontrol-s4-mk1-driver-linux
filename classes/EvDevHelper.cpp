@@ -7,56 +7,62 @@
 #include "../includes/EvDevHelper.h"
 
 using namespace std;
+
+int EvDevHelper::traktor_device_id = 0;
+
 vector<string> EvDevHelper::get_evdev_device(){
     string path = "/dev/input";
     vector<string> dev_input_files;
+    spdlog::debug("[EvDevHelper::get_evdev_device] Retrieving EVDEV Devices...");
     for (const auto & entry : filesystem::directory_iterator(path)){
         string uri = entry.path();
         if (uri.find("event") != string::npos)
             dev_input_files.push_back(uri);
     }
-
+    spdlog::debug("[EvDevHelper::get_evdev_device] FINISHED");
     return dev_input_files;
 }
 
 tuple<int, struct libevdev *> EvDevHelper::get_traktor_controller_device(){
+    spdlog::debug("[EvDevHelper::get_traktor_controller_device] Retrieving EVDEV Devices...");
     vector<string> uris = get_evdev_device();
     struct libevdev *dev = NULL;
     for (const string & file : uris){
-        spdlog::info("Trying to open {0} file...", file);
+        spdlog::debug("[EvDevHelper::get_traktor_controller_device] Trying to open {0} file...", file);
         const int fd = open(file.c_str(), O_RDONLY | O_NONBLOCK);
-        spdlog::info("FD obtained: {0}", fd);
+        spdlog::debug("[EvDevHelper::get_traktor_controller_device] FD obtained: {0}", fd);
         try{
             //auto evdev = evdevw::Evdev::create_from_fd(fd);
             int evdev = libevdev_new_from_fd(fd, &dev);
             if (evdev < 0) {
-                spdlog::error("[ERROR-0001] Failed to init libevdev ({0})", strerror(-evdev));
+                spdlog::error("[EvDevHelper::get_traktor_controller_device] Failed to init libevdev ({0})", strerror(-evdev));
                 exit(EXIT_FAILURE);
             }
             if ((libevdev_get_id_vendor(dev) == 0x17cc) && (libevdev_get_id_product(dev) == 0xbaff)){
-                spdlog::info("Found Traktor S4 Device: {0}", libevdev_get_name(dev));
+                spdlog::debug("[EvDevHelper::get_traktor_controller_device] Found Traktor S4 Device: {0}", libevdev_get_name(dev));
                 return make_tuple(evdev, dev);
             }
         }
         catch (const evdevw::Exception &e) {
-            spdlog::error("[ERROR-0002] Error Reading: {0} Error: {1}", file, strerror(e.get_error()));
+            spdlog::error("[EvDevHelper::get_traktor_controller_device] Error Reading: {0} Error: {1}", file, strerror(e.get_error()));
         }
     }
+    spdlog::debug("[EvDevHelper::get_traktor_controller_device] FINISHED");
     return make_tuple(-1, dev);
 }
 
 void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
-
+    spdlog::debug("[EvDevHelper::read_events_from_device] Reading events from Traktor Kontrol S4 Mk1");
     struct libevdev *dev = NULL;
     Button *buttons = new Button();
     int rc = 1;
     tie(rc, dev) = get_traktor_controller_device();
     if (rc < 0) {
-        spdlog::error("[ERROR-0003] Failed to init libevdev (%s)", strerror(-rc));
+        spdlog::error("[EvDevHelper::read_events_from_device] Failed to init libevdev (%s)", strerror(-rc));
         exit(EXIT_FAILURE);
     }
-    spdlog::info("Input device name: {0}", libevdev_get_name(dev));
-    spdlog::info("Input device ID: bus {0} vendor {1} product {2}",
+    spdlog::debug("Input device name: {0}", libevdev_get_name(dev));
+    spdlog::debug("Input device ID: bus {0} vendor {1} product {2}",
            libevdev_get_id_bustype(dev),
            libevdev_get_id_vendor(dev),
            libevdev_get_id_product(dev));
@@ -99,31 +105,52 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
 }
 
 void EvDevHelper::initialize_buttons_leds(){
-    spdlog::info("Initializing controller leds....");
-
-    map<int, Led *>::iterator it;
-    for (it = Led::leds_mapping.begin(); it !=Led::leds_mapping.end(); it++)
-    {
-        Led *led = it->second;
-        if (led->by_default == true) {
-            string cmd = "amixer -c TraktorKontrolS cset numid=" + to_string(led->code) + " " + to_string(Led::MIDDLE) +
-                         " > /dev/null";
-            system(cmd.c_str());
+    spdlog::debug("[EvDevHelper::initialize_buttons_leds] Initializing controller leds....");
+    int ctls[sizeof(Led::leds_mapping)];
+    traktor_device_id = RtAudioHelper::get_traktor_device();
+    spdlog::debug("[EvDevHelper::initialize_buttons_leds] Using device {0}", to_string(traktor_device_id));
+    if (traktor_device_id != EXIT_FAILURE){
+        map<int, Led *>::iterator it;
+        int cont = 0;
+        for (it = Led::leds_mapping.begin(); it !=Led::leds_mapping.end(); it++)
+        {
+            if (it->second->by_default == true) {
+                spdlog::debug("[EvDevHelper::initialize_buttons_leds] Preparing for init Led Code {0}", to_string(it->second->code));
+                ctls[cont] = it->second->code;
+                if (((cont % 5) == 0) && (cont > 0)){
+                    RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
+                    cont = 0;
+                }
+                else
+                    cont++;
+            }
         }
+        RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
     }
-    spdlog::info("SUCCESS");
+    else{
+        spdlog::error("[EvDevHelper::initialize_buttons_leds] Cannot use {0} device", to_string(traktor_device_id));
+        exit(EXIT_FAILURE);
+    }
+    spdlog::debug("[EvDevHelper::initialize_buttons_leds] FINISHED");
 }
 
 void EvDevHelper::shutdown_buttons_leds(){
-    spdlog::info("Shutting down controller leds....");
-
+    spdlog::debug("[EvDevHelper::shutdown_buttons_leds] Shutting down controller leds....");
     map<int, Led *>::iterator it;
+    int ctls[sizeof(Led::leds_mapping)];
+    int cont = 0;
     for (it = Led::leds_mapping.begin(); it != Led::leds_mapping.end(); it++)
     {
-        Led *led = it->second;
-        string cmd = "amixer -c TraktorKontrolS cset numid=" + to_string(led->code) + " " + to_string(Led::OFF) + " > /dev/null";
-        system(cmd.c_str());
+        ctls[cont] = it->second->code;
+        spdlog::debug("Preparing for shutdown Led Code {0}", to_string(it->second->code));
+        if (((cont % 5) == 0) && (cont > 0)){
+            RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
+            cont = 0;
+        }
+        else
+            cont++;
     }
-    spdlog::info("SUCCESS");
+    RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
+    spdlog::debug("[EvDevHelper::shutdown_buttons_leds] FINISHED");
 }
 

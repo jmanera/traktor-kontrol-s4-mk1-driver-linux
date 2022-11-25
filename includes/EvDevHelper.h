@@ -28,6 +28,7 @@
 #include "Knob.h"
 #include "Led.h"
 #include "EvDevEvent.h"
+#include "RtAudioHelper.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ private:
     static vector<string> get_evdev_device();
     static tuple<int, struct libevdev *> get_traktor_controller_device();
     static void shutdown_application(int);
+    static int traktor_device_id;
 public:
     static void read_events_from_device(RtMidiOut *);
     static void initialize_buttons_leds();
