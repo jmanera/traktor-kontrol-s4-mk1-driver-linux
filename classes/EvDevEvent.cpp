@@ -70,37 +70,39 @@ EvDevEvent::EvDevEvent(__u16 in_type, __u16 in_code, __s32 in_value, timeval in_
 }
 
 void EvDevEvent::handle_with(RtMidiOut *midi_out){
+    spdlog::debug("[EvDevEvent::handle_with] Checking event to handle with...");
     string type_string = EvDevEvent::types.find(type)->second;
     if (type_string == "EV_KEY"){
         button_dev = Button::buttons_mapping[code];
         button_dev->value = value;
-        spdlog::info("Get Button. Code: {0}, Name: {1}, LED Code: {2}, Channel: {3}", to_string(button_dev->code), button_dev->name, to_string(button_dev->led_code), to_string(button_dev->channel));
+        spdlog::debug("[EvDevEvent::handle_with] Get Button. Code: {0}, Name: {1}, LED Code: {2}, Channel: {3}", to_string(button_dev->code), button_dev->name, to_string(button_dev->led_code), to_string(button_dev->channel));
         int status = button_dev->handle_event();
         if (status < 0){
-            spdlog::error("Error handling button with code: {0} {1}", to_string(status), strerror(status));
+            spdlog::error("[EvDevEvent::handle_with] Error handling button with code: {0} {1}", to_string(status), strerror(status));
         }
     }
     else if (type_string == "EV_ABS"){
         if (Slider::sliders_mapping.find(code) != Slider::sliders_mapping.end()){
             slider_dev = Slider::sliders_mapping[code];
             slider_dev->value = value;
-            spdlog::info("Get Slider. Code: {0}, Name: {1}, Value: {2}", to_string(slider_dev->code), slider_dev->name, to_string(slider_dev->value));
+            spdlog::debug("[EvDevEvent::handle_with] Get Slider. Code: {0}, Name: {1}, Value: {2}", to_string(slider_dev->code), slider_dev->name, to_string(slider_dev->value));
         }
         else if (Knob::knob_mapping.find(code) != Knob::knob_mapping.end()){
             knob_dev = Knob::knob_mapping[code];
             knob_dev->value = value;
-            spdlog::info("Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(knob_dev->code), knob_dev->name, to_string(knob_dev->value));
+            spdlog::debug("[EvDevEvent::handle_with] Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(knob_dev->code), knob_dev->name, to_string(knob_dev->value));
         }
         else if (Jog::jog_mapping.find(code) != Jog::jog_mapping.end()){
             jog_dev = Jog::jog_mapping[code];
             jog_dev->value = value;
-            spdlog::info("Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
+            spdlog::debug("[EvDevEvent::handle_with] Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
         }
         else{
-            spdlog::warn("EV_ABS Event not handled: {0} {1} {2} {3}", to_string(type), to_string(code), to_string(value), to_string(time.tv_sec));
+            spdlog::warn("[EvDevEvent::handle_with] EV_ABS Event not handled: {0} {1} {2} {3}", to_string(type), to_string(code), to_string(value), to_string(time.tv_sec));
         }
     }
     else {
-        spdlog::error("Event not handled: {0} {1} {2} {3}", EvDevEvent::types.find(type)->second, to_string(code), to_string(value), to_string(time.tv_sec));
+        spdlog::error("[EvDevEvent::handle_with] Event not handled: {0} {1} {2} {3}", EvDevEvent::types.find(type)->second, to_string(code), to_string(value), to_string(time.tv_sec));
     }
+    spdlog::debug("[EvDevEvent::handle_with] FINISHED");
 }

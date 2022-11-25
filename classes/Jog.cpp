@@ -2,7 +2,13 @@
 // Created by aspgems on 22/11/22.
 //
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
 #include "Jog.h"
+#define CONFIG_FILE "mappings/traktor-kontrol-s4-mk1/jogs.conf"
 
 Jog::Jog(){
     code = value = -1;

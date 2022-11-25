@@ -7,11 +7,28 @@ include_directories(./classes)
 include_directories(./includes)
 
 add_executable(traktor_kontrol_s4_mk1_driver_linux
-        classes/RtMidiHelper.cpp
-        classes/EvDevHelper.cpp
+        includes/Button.h
         includes/EvDevHelper.h
         includes/RtMidiHelper.h
-        main.cpp classes/Button.cpp includes/Button.h classes/Knob.cpp includes/Knob.h classes/Slider.cpp includes/Slider.h classes/Led.cpp includes/Led.h classes/EvDevEvent.cpp includes/EvDevEvent.h classes/Jog.cpp includes/Jog.h classes/RtMidiEvent.cpp includes/RtMidiEvent.h)
+        includes/Knob.h
+        includes/Slider.h
+        includes/Led.h
+        includes/EvDevEvent.h
+        includes/Jog.h
+        includes/RtMidiEvent.h
+        includes/RtAudioHelper.h
+        classes/RtMidiHelper.cpp
+        classes/EvDevHelper.cpp
+        classes/Button.cpp
+        classes/Knob.cpp
+        classes/Slider.cpp
+        classes/Led.cpp
+        classes/EvDevEvent.cpp
+        classes/Jog.cpp
+        classes/RtMidiEvent.cpp
+        classes/RtAudioHelper.cpp
+        main.cpp)
 
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi)
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libevdev.so.2)
+target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libasound.so.2)

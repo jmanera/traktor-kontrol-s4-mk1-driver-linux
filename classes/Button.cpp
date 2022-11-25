@@ -99,7 +99,6 @@ map<int, Button *> Button::buttons_mapping = {
 
 int Button::handle_event(){
 
-    // Start light
     int output_value = Led::MIDDLE;
     if (value == 1){
         output_value = Led::ON;
