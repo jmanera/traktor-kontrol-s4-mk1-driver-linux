@@ -1,26 +1,19 @@
-//
-// Created by aspgems on 17/11/22.
-//
-
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVHELPER_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVHELPER_H
 
 #include <cstring>
 #include <stdlib.h>
-#include <string>
 #include <filesystem>
 #include <vector>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <variant>
 #include <iostream>
 #include <typeinfo>
 #include <variant>
 #include <libevdev/libevdev.h>
 #include <map>
 #include <tuple>
-#include <alsa/asoundlib.h>
 #include <signal.h>
 #include "spdlog/spdlog.h"
 #include "evdevw.hpp"
@@ -28,7 +21,7 @@
 #include "Knob.h"
 #include "Led.h"
 #include "EvDevEvent.h"
-#include "RtAudioHelper.h"
+#include "AlsaHelper.h"
 
 using namespace std;
 

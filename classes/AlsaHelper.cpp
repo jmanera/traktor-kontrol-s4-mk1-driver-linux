@@ -2,11 +2,11 @@
 // Created by aspgems on 23/11/22.
 //
 
-#include "RtAudioHelper.h"
+#include "AlsaHelper.h"
 
 #define CARD_NAME "Traktor Kontrol S4"
 
-void RtAudioHelper::show_control_id(snd_ctl_elem_id_t *id)
+void AlsaHelper::show_control_id(snd_ctl_elem_id_t *id)
 {
     char *str;
     str = snd_ctl_ascii_elem_id_get(id);
@@ -15,7 +15,7 @@ void RtAudioHelper::show_control_id(snd_ctl_elem_id_t *id)
     free(str);
 }
 
-void RtAudioHelper::check(int err, const char *f)
+void AlsaHelper::check(int err, const char *f)
 {
     if (err < 0) {
         spdlog::error("[RtAudioHelper::check] {0} failed: {1}", f, snd_strerror(err));
@@ -24,7 +24,7 @@ void RtAudioHelper::check(int err, const char *f)
 }
 #define CHECK(f) check(f, #f)
 
-int RtAudioHelper::set_led_value(int card_id, int control_id, int led_value){
+int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
     spdlog::debug("[RtAudioHelper::set_led_value] Setting value {0} to Led id {1} with value {2}...", to_string(card_id), to_string(control_id), to_string(led_value));
     snd_ctl_t *ctl;
     snd_ctl_elem_value_t *value;
@@ -44,7 +44,7 @@ int RtAudioHelper::set_led_value(int card_id, int control_id, int led_value){
     return 0;
 }
 
-int RtAudioHelper::bulk_led_value(int card_id, int control_ids[], int led_value, int num_controls){
+int AlsaHelper::bulk_led_value(int card_id, int control_ids[], int led_value, int num_controls){
     string control_name = "hw:" + to_string(card_id);
     spdlog::debug("[RtAudioHelper::bulk_led_value] Initiating bulk_led_value in device {0}...", control_name);
     snd_ctl_t *ctl;
@@ -67,7 +67,7 @@ int RtAudioHelper::bulk_led_value(int card_id, int control_ids[], int led_value,
     return 0;
 }
 
-int RtAudioHelper::get_traktor_device(){
+int AlsaHelper::get_traktor_device(){
     spdlog::debug("[RtAudioHelper::get_traktor_device] Looking for Traktor Kontrol S4 ALSA Device....");
     int card, dev;
     card = dev = -1;

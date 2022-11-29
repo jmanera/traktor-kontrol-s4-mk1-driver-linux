@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 22/11/22.
-//
-
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVEVENT_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVEVENT_H
 
@@ -13,19 +9,24 @@
 #include "Knob.h"
 #include "Slider.h"
 #include "Jog.h"
-#include "RtMidiHelper.h"
+#include "MidiHelper.h"
 #include "spdlog/spdlog.h"
 
 using namespace std;
+
 class EvDevEvent {
 private:
 
 public:
-    EvDevEvent(__u16 type, __u16 code, __s32 value, timeval time);
+    EvDevEvent(__u16 type, __u16 code, __s32 value, timeval time, bool, bool, bool, bool);
     __u16 type;
     __u16 code;
     __s32 value;
     timeval time;
+    bool shift_ch1;
+    bool shift_ch2;
+    bool toggle_ac;
+    bool toggle_bd;
     Button *button_dev;
     Knob *knob_dev;
     Slider *slider_dev;

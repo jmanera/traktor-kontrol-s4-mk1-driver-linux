@@ -3,13 +3,14 @@
 //
 #include <iostream>
 #include <cstdlib>
-#include "includes/RtMidiHelper.h"
+#include "includes/MidiHelper.h"
 #include "includes/EvDevHelper.h"
-#include "includes/RtAudioHelper.h"
-#include <spdlog/spdlog.h>
+#include "includes/AlsaHelper.h"
+#include "spdlog/spdlog.h"
+
 using namespace std;
 
-RtMidiHelper *rtmidi_helper;
+MidiHelper *rtmidi_helper;
 EvDevHelper *evdev_helper;
 
 void shutdown_application(int signum){
@@ -28,19 +29,20 @@ void init_application(){
 
     spdlog::info("[main::init_application] Starting helpers....");
     evdev_helper = new EvDevHelper();
-    rtmidi_helper = new RtMidiHelper();
+    rtmidi_helper = new MidiHelper();
 
     spdlog::info("[main::init_application] Initializing leds....");
     EvDevHelper::initialize_buttons_leds();
 
     spdlog::info("[main::init_application] Get MIDI information....");
-    RtMidiHelper::show_midi_information(rtmidi_helper);
+    MidiHelper::show_midi_information(rtmidi_helper);
 
     spdlog::info("[main::init_application] Reading events from Traktor Kontrol S4 Mk1....");
     evdev_helper->read_events_from_device(rtmidi_helper->pMidiOut);
 
     spdlog::info("[main::init_application] Started!");
 }
+
 int main(int argc, char **argv) {
     signal(SIGTERM,shutdown_application);
     signal(SIGKILL,shutdown_application);

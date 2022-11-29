@@ -5,7 +5,11 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
+#include <sstream>
 #include <map>
 
 using namespace std;

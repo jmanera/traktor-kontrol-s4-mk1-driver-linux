@@ -1,14 +1,13 @@
-//
-// Created by aspgems on 17/11/22.
-//
-
-
 #include <iostream>
-#include "../includes/EvDevHelper.h"
+#include "EvDevHelper.h"
 
 using namespace std;
 
 int EvDevHelper::traktor_device_id = 0;
+bool shift_ch1 = false;
+bool shift_ch2 = false;
+bool toggle_ac = false;
+bool toggle_bd = false;
 
 vector<string> EvDevHelper::get_evdev_device(){
     string path = "/dev/input";
@@ -90,7 +89,21 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                 evdev_event->handle_event();
 
             }*/
-            EvDevEvent *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time);
+            if (ev.code == 257){ // SHIFT CH1
+              shift_ch1 = !shift_ch1;
+            }
+            if (ev.code == 313){ // SHIFT CH2
+              shift_ch2 = !shift_ch2;
+            }
+            if (ev.code == 264){ // TOGGLE CH1 / CH3
+              if (ev.value == 1)
+                toggle_ac = !toggle_ac;
+            }
+            if (ev.code == 304){ // TOGGLE CH2 / CH4
+              if (ev.value == 1)
+                toggle_bd = !toggle_bd;
+            }
+            EvDevEvent *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
             evdev_event->handle_with(pMidiOut);
             /*spdlog::info("Event: TypeName: {0} - CodeName: {1} - Type: {2} - Code: {3} - Value: {4} - Time: {5}",
                    libevdev_event_type_get_name(ev.type),
@@ -107,7 +120,7 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
 void EvDevHelper::initialize_buttons_leds(){
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Initializing controller leds....");
     int ctls[sizeof(Led::leds_mapping)];
-    traktor_device_id = RtAudioHelper::get_traktor_device();
+    traktor_device_id = AlsaHelper::get_traktor_device();
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Using device {0}", to_string(traktor_device_id));
     if (traktor_device_id != EXIT_FAILURE){
         map<int, Led *>::iterator it;
@@ -118,14 +131,14 @@ void EvDevHelper::initialize_buttons_leds(){
                 spdlog::debug("[EvDevHelper::initialize_buttons_leds] Preparing for init Led Code {0}", to_string(it->second->code));
                 ctls[cont] = it->second->code;
                 if (((cont % 5) == 0) && (cont > 0)){
-                    RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
+                    AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
                     cont = 0;
                 }
                 else
                     cont++;
             }
         }
-        RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
+        AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
     }
     else{
         spdlog::error("[EvDevHelper::initialize_buttons_leds] Cannot use {0} device", to_string(traktor_device_id));
@@ -144,13 +157,13 @@ void EvDevHelper::shutdown_buttons_leds(){
         ctls[cont] = it->second->code;
         spdlog::debug("Preparing for shutdown Led Code {0}", to_string(it->second->code));
         if (((cont % 5) == 0) && (cont > 0)){
-            RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
+            AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
             cont = 0;
         }
         else
             cont++;
     }
-    RtAudioHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
+    AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
     spdlog::debug("[EvDevHelper::shutdown_buttons_leds] FINISHED");
 }
 

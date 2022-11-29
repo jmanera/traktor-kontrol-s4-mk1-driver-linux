@@ -1,11 +1,8 @@
-//
-// Created by aspgems on 17/11/22.
-//
-#include "../includes/RtMidiHelper.h"
+#include "MidiHelper.h"
 
 using namespace std;
 
-RtMidiHelper::RtMidiHelper(){
+MidiHelper::MidiHelper(){
     try {
         pMidiIn = new RtMidiIn(RtMidi::UNSPECIFIED, "TRAKTORS4");
         pMidiIn->openVirtualPort();
@@ -20,19 +17,19 @@ RtMidiHelper::RtMidiHelper(){
     }
 }
 
-bool RtMidiHelper::close_input_port()
+bool MidiHelper::close_input_port()
 {
     pMidiIn->closePort();
     return true;
 }
 
-bool RtMidiHelper::close_output_port()
+bool MidiHelper::close_output_port()
 {
     pMidiOut->closePort();
     return true;
 }
 
-void RtMidiHelper::midi_in_callback(double deltatime, std::vector< unsigned char > *message, void *userData){
+void MidiHelper::midi_in_callback(double deltatime, std::vector<unsigned char > *message, void *userData){
     spdlog::debug("ENTER");
     unsigned int nBytes = message->size();
     for ( unsigned int i=0; i<nBytes; i++ )
@@ -41,7 +38,7 @@ void RtMidiHelper::midi_in_callback(double deltatime, std::vector< unsigned char
         std::cout << "stamp = " << deltatime << std::endl;
 }
 
-void RtMidiHelper::show_midi_information(RtMidiHelper *rtmidi_helper){
+void MidiHelper::show_midi_information(MidiHelper *rtmidi_helper){
     unsigned int nPorts = rtmidi_helper->pMidiIn->getPortCount();
     spdlog::debug("[RtMidiHelper::show_midi_information] There are {0} MIDI input sources available", nPorts);
     std::string portName;
