@@ -99,23 +99,23 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shif
   // Get Button MIDI code
   if (MidiEvent::midi_mapping.find(code) != MidiEvent::midi_mapping.end()) {
     MidiEvent *midi_event = MidiEvent::midi_mapping[code];
-    spdlog::debug("[MidiHelper::handle_button] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
-    spdlog::debug("[MidiHelper::handle_button] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
-    spdlog::debug("[MidiHelper::handle_button] Creating message...");
+    spdlog::debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
+    spdlog::debug("[Button::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
+    spdlog::debug("[Button::handle_event] Creating message...");
     std::vector<unsigned char> message;
     message.push_back(midi_event->channel_byte);
     message.push_back(midi_event->status_byte);
     message.push_back(value);
-    spdlog::debug("[MidiHelper::handle_button] Message created!");
-    spdlog::debug("[MidiHelper::handle_button] Sending to MIDI Outport....");
+    spdlog::debug("[Button::handle_event] Message created!");
+    spdlog::debug("[Button::handle_event] Sending to MIDI Outport....");
     try{
       midi_out->sendMessage(&message);
     }
     catch (exception &e){
-      spdlog::error("[MidiHelper::handle_button] Error sending message to MIDI out port: {0}", e.what());
+      spdlog::error("[Button::handle_event] Error sending message to MIDI out port: {0}", e.what());
       return EXIT_FAILURE;
     }
-    spdlog::debug("[MidiHelper::handle_button] Sent!");
+    spdlog::debug("[Button::handle_event] Sent!");
   }
 
   return EXIT_SUCCESS;

@@ -40,29 +40,17 @@ int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
     CHECK(snd_ctl_elem_write(ctl, value));
 
     snd_ctl_close(ctl);
-    spdlog::debug("FINISHED");
+    spdlog::debug("[AlsaHelper::set_led_value] FINISHED");
     return 0;
 }
 
 int AlsaHelper::bulk_led_value(int card_id, int control_ids[], int led_value, int num_controls){
     string control_name = "hw:" + to_string(card_id);
     spdlog::debug("[RtAudioHelper::bulk_led_value] Initiating bulk_led_value in device {0}...", control_name);
-    snd_ctl_t *ctl;
-    snd_ctl_elem_value_t *value;
-
-    CHECK(snd_ctl_open(&ctl, control_name.c_str(), 0));
-
-    snd_ctl_elem_value_alloca(&value);
-    snd_ctl_elem_value_set_interface(value, SND_CTL_ELEM_IFACE_MIXER);
 
     for (int ctl_id = 0; ctl_id < num_controls; ctl_id++){
-        spdlog::debug("[RtAudioHelper::bulk_led_value] Setting Led code {0}", to_string(control_ids[ctl_id]) );
-        snd_ctl_elem_value_set_numid(value, control_ids[ctl_id]);
-        snd_ctl_elem_value_set_integer(value, 0, led_value);
-        CHECK(snd_ctl_elem_write(ctl, value));
+        set_led_value(card_id, control_ids[ctl_id], led_value);
     }
-    snd_ctl_close(ctl);
-
     spdlog::debug("[RtAudioHelper::bulk_led_value] FINISHED");
     return 0;
 }

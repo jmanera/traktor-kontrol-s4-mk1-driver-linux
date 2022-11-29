@@ -83,6 +83,7 @@ map<int, MidiEvent *> MidiEvent::midi_mapping = {
     { 49, new MidiEvent(0x16, 0xb4, "POT", "FX1 EFFECT KNOB 2")},
     { 50, new MidiEvent(0x15, 0xb4, "POT", "FX1 EFFECT KNOB 1")},
     { 51, new MidiEvent(0x14, 0xb4, "POT", "FX1 DRY / WET")},
+    //{ , new MidiEvent(0x04, 0xb4, "POT", "LOOP REC DRY / WET")},
     { 23, new MidiEvent(0x0a, 0xb4, "POT", "CROSSFADER")},
     { 284, new MidiEvent(0x09, 0xb4, "BTN", "BROWSE")},
     { 283, new MidiEvent(0x08, 0xb4, "BTN", "PLAY")},
@@ -138,3 +139,8 @@ map<int, MidiEvent *> MidiEvent::midi_mapping = {
     { 318, new MidiEvent(0xe, 0xb1, "BTN", "DECK B HOTCUE 4", 0x2c, 0xb1, 0xe, 0xb3, 0x22, 0xb3)},
     { 319, new MidiEvent(0xa, 0xb1, "BTN", "DECK B PLAY", 0x28, 0xb1, 0xa, 0xb3, 0x22, 0xb3)}
 };
+
+
+int MidiEvent::get_time(){
+  return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}

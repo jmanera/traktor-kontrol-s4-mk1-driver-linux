@@ -15,7 +15,10 @@ using namespace std;
 
 class Knob {
 private:
-    int get_time();
+
+    int get_value_gain_rot();
+    int get_value_rot();
+    int get_value_browser_rot();
 public:
     Knob(int code, string name, int value);
     Knob();

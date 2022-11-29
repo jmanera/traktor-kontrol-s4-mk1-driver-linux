@@ -62,20 +62,17 @@ const map<__u16, string> EvDevEvent::codes = {
 };
 
 
-EvDevEvent::EvDevEvent(__u16 in_type, __u16 in_code, __s32 in_value, timeval in_time, bool in_shift_ch1, bool in_shift_ch2, bool in_toggle_ac, bool in_toggle_bd) {
+EvDevEvent::EvDevEvent(__u16 in_type, __u16 in_code, __s32 in_value, timeval in_time) {
     type = in_type;
     code = in_code;
     value = in_value;
     time = in_time;
-    shift_ch1 = in_shift_ch1;
-    shift_ch2 = in_shift_ch2;
-    toggle_ac = in_toggle_ac;
-    toggle_bd = in_toggle_bd;
 }
 
-void EvDevEvent::handle_with(RtMidiOut *midi_out){
+void EvDevEvent::handle_with(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
     spdlog::debug("[EvDevEvent::handle_with] Checking event to handle with...");
     string type_string = EvDevEvent::types.find(type)->second;
+    spdlog::debug("[EvDevEvent::handle_with] Type: {0} Code: {1}", type_string, code);
     if (type_string == "EV_KEY"){
         button_dev = Button::buttons_mapping[code];
         button_dev->value = value;
@@ -107,7 +104,11 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out){
         else if (Jog::jog_mapping.find(code) != Jog::jog_mapping.end()){
             jog_dev = Jog::jog_mapping[code];
             jog_dev->value = value;
-            spdlog::debug("[EvDevEvent::handle_with] Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
+            int status = jog_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
+            if (status < 0){
+              spdlog::error("[EvDevEvent::handle_with] Error handling Jog Wheel with code: {0} {1}", to_string(status), strerror(status));
+            }
+            spdlog::debug("[EvDevEvent::handle_with] Get Jog Wheel. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
         }
         else{
             spdlog::warn("[EvDevEvent::handle_with] EV_ABS Event not handled: {0} {1} {2} {3}", to_string(type), to_string(code), to_string(value), to_string(time.tv_sec));

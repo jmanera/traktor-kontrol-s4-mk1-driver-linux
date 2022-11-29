@@ -18,22 +18,18 @@ class EvDevEvent {
 private:
 
 public:
-    EvDevEvent(__u16 type, __u16 code, __s32 value, timeval time, bool, bool, bool, bool);
+    EvDevEvent(__u16 type, __u16 code, __s32 value, timeval time);
     __u16 type;
     __u16 code;
     __s32 value;
     timeval time;
-    bool shift_ch1;
-    bool shift_ch2;
-    bool toggle_ac;
-    bool toggle_bd;
     Button *button_dev;
     Knob *knob_dev;
     Slider *slider_dev;
     Jog *jog_dev;
     static const map<__u16, string> types;
     static const map<__u16, string> codes;
-    void handle_with(RtMidiOut *midi_out);
+    void handle_with(RtMidiOut *midi_out, bool, bool, bool, bool);
 };
 
 

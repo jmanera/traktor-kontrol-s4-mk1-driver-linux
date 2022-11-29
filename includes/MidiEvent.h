@@ -7,6 +7,9 @@
 
 #include <string>
 #include <map>
+#include <unistd.h>
+#include <chrono>
+#define SLEEP(milliseconds) usleep((unsigned long) (milliseconds * 1000))
 
 using namespace std;
 
@@ -33,6 +36,7 @@ public:
     unsigned char tgl_on_shf_on_status_byte;
     unsigned char tgl_on_shf_on_channel_byte;
     static map<int, MidiEvent *> midi_mapping;
+    static int get_time();
 };
 
 

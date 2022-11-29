@@ -103,8 +103,8 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
               if (ev.value == 1)
                 toggle_bd = !toggle_bd;
             }
-            EvDevEvent *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
-            evdev_event->handle_with(pMidiOut);
+            EvDevEvent *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time);
+            evdev_event->handle_with(pMidiOut, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
             /*spdlog::info("Event: TypeName: {0} - CodeName: {1} - Type: {2} - Code: {3} - Value: {4} - Time: {5}",
                    libevdev_event_type_get_name(ev.type),
                    libevdev_event_code_get_name(ev.type, ev.code),
