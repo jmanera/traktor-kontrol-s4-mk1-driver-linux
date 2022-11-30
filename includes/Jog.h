@@ -5,8 +5,14 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <vector>
+#include <sstream>
 #include <map>
+#include "MidiEvent.h"
+#include "MidiHelper.h"
 
 using namespace std;
 
@@ -17,8 +23,13 @@ public:
     int code;
     string name;
     int value;
+    int counter;
+    int prev_control_value;
+    int sensitivity;
+    int updated;
+    unsigned int handle_event(RtMidiOut *, bool, bool, bool, bool);
     static map<int, Jog *> jog_mapping;
+    int get_value_jog();
 };
-
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H

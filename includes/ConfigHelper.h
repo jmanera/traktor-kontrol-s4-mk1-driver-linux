@@ -1,0 +1,18 @@
+//
+// Created by aspgems on 26/11/22.
+//
+
+#ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_CLASSES_CONFIGHELPER_H_
+#define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_CLASSES_CONFIGHELPER_H_
+
+using namespace std;
+
+class ConfigHelper {
+private:
+
+public:
+
+};
+
+
+#endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_CLASSES_CONFIGHELPER_H_

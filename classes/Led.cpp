@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 21/11/22.
-//
-
 #include "Led.h"
 using namespace std;
 

@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 22/11/22.
-//
-
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVEVENT_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVEVENT_H
 
@@ -13,10 +9,11 @@
 #include "Knob.h"
 #include "Slider.h"
 #include "Jog.h"
-#include "RtMidiHelper.h"
+#include "MidiHelper.h"
 #include "spdlog/spdlog.h"
 
 using namespace std;
+
 class EvDevEvent {
 private:
 
@@ -32,7 +29,7 @@ public:
     Jog *jog_dev;
     static const map<__u16, string> types;
     static const map<__u16, string> codes;
-    void handle_with(RtMidiOut *midi_out);
+    void handle_with(RtMidiOut *midi_out, bool, bool, bool, bool);
 };
 
 
