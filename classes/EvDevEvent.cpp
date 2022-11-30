@@ -75,6 +75,8 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2
     spdlog::debug("[EvDevEvent::handle_with] Type: {0} Code: {1}", type_string, code);
     if (type_string == "EV_KEY"){
         button_dev = Button::buttons_mapping[code];
+        if (button_dev == NULL)
+          return;
         button_dev->value = value;
         spdlog::debug("[EvDevEvent::handle_with] Get Button. Code: {0}, Name: {1}, LED Code: {2}, Channel: {3}", to_string(button_dev->code), button_dev->name, to_string(button_dev->led_code), to_string(button_dev->channel));
         int status = button_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
@@ -85,6 +87,8 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2
     else if (type_string == "EV_ABS"){
         if (Slider::sliders_mapping.find(code) != Slider::sliders_mapping.end()){
             slider_dev = Slider::sliders_mapping[code];
+            if (slider_dev == NULL)
+              return;
             slider_dev->value = floor(value / 32);
             spdlog::debug("[EvDevEvent::handle_with] Get Slider. Code: {0}, Name: {1}, Value: {2}", to_string(slider_dev->code), slider_dev->name, to_string(slider_dev->value));
             int status = slider_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
@@ -94,6 +98,8 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2
         }
         else if (Knob::knob_mapping.find(code) != Knob::knob_mapping.end()){
             knob_dev = Knob::knob_mapping[code];
+            if (knob_dev == NULL)
+              return;
             knob_dev->value = value;
             spdlog::debug("[EvDevEvent::handle_with] Get Knob. Code: {0}, Name: {1}, Value: {2}", to_string(knob_dev->code), knob_dev->name, to_string(knob_dev->value));
             int status = knob_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
@@ -103,6 +109,8 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2
         }
         else if (Jog::jog_mapping.find(code) != Jog::jog_mapping.end()){
             jog_dev = Jog::jog_mapping[code];
+            if (jog_dev == NULL)
+              return;
             jog_dev->value = value;
             int status = jog_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
             if (status < 0){

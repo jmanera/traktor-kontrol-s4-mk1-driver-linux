@@ -2,7 +2,9 @@
 
 map<int, Jog *> Jog::jog_mapping = {
         {52, new Jog(52, "JOG WHEEL CH1 / CH3", 0)},
-        {53, new Jog(53, "JOG WHEEL CH2 / CH4", 0)}
+        {53, new Jog(53, "JOG WHEEL CH2 / CH4", 0)},
+        {26, new Jog(26, "JOG WHEEL CH1 / CH3 PRESSED", 0)},
+        {27, new Jog(27, "JOG WHEEL CH1 / CH3 PRESSED", 0)}
 };
 
 Jog::Jog(){
@@ -26,7 +28,15 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
     std::vector<unsigned char> message;
     message.push_back(midi_event->channel_byte);
     message.push_back(midi_event->status_byte);
-    message.push_back(get_value_jog());
+    if (midi_event->controller_type == "JOG_TOUCH"){
+      if (value >= 3050){
+        value = 0x7f;
+      }
+    }
+    else{
+      value = get_value_jog();
+    }
+    message.push_back(value);
     spdlog::debug("[Jog::handle_event] Message created!");
     spdlog::debug("[Jog::handle_event] Sending to MIDI Outport....");
     try{
@@ -63,7 +73,7 @@ int Jog::get_value_jog(){
   prev_control_value = value;
 
   if ((MidiEvent::get_time() - updated) < sensitivity){
-    counter = diff;
+    counter += diff;
     return -1;
   }
   else{
@@ -71,7 +81,7 @@ int Jog::get_value_jog(){
     counter = 0;
     updated = MidiEvent::get_time();
 
-    if (-64 <= value < 0){
+    if ((value >= -64) && (value < 0)){
       value = 128 + value;
     }
     else if(value < -64){

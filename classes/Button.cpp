@@ -94,7 +94,8 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shif
     output_value = Led::ON;
   }
 
-  AlsaHelper::set_led_value(AlsaHelper::get_traktor_device(), led_code, output_value);
+  if ((value > 0) && (led_code > 0) && (output_value > 0))
+    AlsaHelper::set_led_value(AlsaHelper::get_traktor_device(), led_code, output_value);
 
   // Get Button MIDI code
   if (MidiEvent::midi_mapping.find(code) != MidiEvent::midi_mapping.end()) {
