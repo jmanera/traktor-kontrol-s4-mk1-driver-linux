@@ -49,14 +49,53 @@ Knob::Knob(int in_code, string in_name, int in_value){
 }
 
 unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd) {
-  if (MidiEvent::midi_mapping.find(code) != MidiEvent::midi_mapping.end()) {
-    MidiEvent *midi_event = MidiEvent::midi_mapping[code];
+  if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
+    MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
 
     spdlog::debug("[Knob::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Knob::handle_event] Creating message...");
     std::vector<unsigned char> message;
-    message.push_back(midi_event->channel_byte);
-    message.push_back(midi_event->status_byte);
+    int channel = -1;
+    int status = -1;
+    if ((midi_event->channel_byte == 0xb0) || (midi_event->channel_byte == 0xb2)){
+      if (shift_ch1 == true && toggle_ac == false){
+        channel = midi_event->tgl_off_shf_on_channel_byte;
+        status = midi_event->tgl_off_shf_on_status_byte;
+      }
+      if (shift_ch1 == false && toggle_ac == true){
+        channel = midi_event->tgl_on_shf_off_channel_byte;
+        status = midi_event->tgl_on_shf_off_status_byte;
+      }
+      if (shift_ch1 == true && toggle_ac == true){
+        channel = midi_event->tgl_on_shf_on_channel_byte;
+        status = midi_event->tgl_on_shf_on_status_byte;
+      }
+    }
+
+    else if ((midi_event->channel_byte == 0xb1) || (midi_event->channel_byte == 0xb3)){
+      if (shift_ch2 == true && toggle_bd == false){
+        channel = midi_event->tgl_off_shf_on_channel_byte;
+        status = midi_event->tgl_off_shf_on_status_byte;
+      }
+      if (shift_ch2 == false && toggle_bd == true){
+        channel = midi_event->tgl_on_shf_off_channel_byte;
+        status = midi_event->tgl_on_shf_off_status_byte;
+      }
+      if (shift_ch2 == true && toggle_bd == true){
+        channel = midi_event->tgl_on_shf_on_channel_byte;
+        status = midi_event->tgl_on_shf_on_status_byte;
+      }
+    }
+
+    if (channel == -1){
+      channel = midi_event->channel_byte;
+    }
+
+    if (status == -1){
+      status = midi_event->status_byte;
+    }
+    message.push_back(channel);
+    message.push_back(status);
     if (midi_event->controller_type == "BROWSE_ROT") {
       value = get_value_rot();
     }
@@ -98,9 +137,9 @@ int Knob::get_value_gain_rot() {
   int diff = -1;
   if (prev_control_value == -1){
     prev_control_value = value;
-    counter = 63;
-    updated = MidiEvent::get_time();
-    return 63;
+    counter = 0x3f;
+    updated = MidiEventOut::get_time();
+    return 0x3f;
   }
 
   if (value <= 3 && prev_control_value >= 12){
@@ -114,15 +153,15 @@ int Knob::get_value_gain_rot() {
   }
   prev_control_value = value;
 
-  if ((MidiEvent::get_time() - updated) < 0.005){
+  if ((MidiEventOut::get_time() - updated) < 0.005){
     counter += diff;
     return -1;
   }
   else{
     counter += diff;
-    updated = MidiEvent::get_time();
-    if (counter > 127){
-      counter = 127;
+    updated = MidiEventOut::get_time();
+    if (counter > 0x7f){
+      counter = 0x7f;
     }
     else if (counter < 0){
       counter = 0;
@@ -135,7 +174,7 @@ int Knob::get_value_rot() {
   int diff = -1;
   if (prev_control_value == -1){
     prev_control_value = value;
-    updated = MidiEvent::get_time();
+    updated = MidiEventOut::get_time();
     return -1;
   }
 
@@ -151,14 +190,14 @@ int Knob::get_value_rot() {
 
   prev_control_value = value;
 
-  if ((MidiEvent::get_time() - updated) < 0.005){
+  if ((MidiEventOut::get_time() - updated) < 0.005){
     counter += diff;
     return -1;
   }
   else{
     value = 0x3f + counter + diff;
     counter = 0;
-    updated = MidiEvent::get_time();
+    updated = MidiEventOut::get_time();
 
     if (value > 0x7f){
       value = 0x7f;

@@ -15,20 +15,24 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         includes/Led.h
         includes/EvDevEvent.h
         includes/Jog.h
-        includes/MidiEvent.h
+        includes/MidiEventOut.h
         includes/AlsaHelper.h
+        includes/ConfigHelper.h
+        includes/rapidcsv.h
+        includes/MidiEventIn.h
         classes/Button.cpp
         classes/MidiHelper.cpp
         classes/EvDevHelper.cpp
-
         classes/Knob.cpp
         classes/Slider.cpp
         classes/Led.cpp
         classes/EvDevEvent.cpp
         classes/Jog.cpp
-        classes/MidiEvent.cpp
+        classes/MidiEventOut.cpp
         classes/AlsaHelper.cpp
-        main.cpp classes/ConfigHelper.cpp includes/ConfigHelper.h includes/rapidcsv.h)
+        classes/ConfigHelper.cpp
+        classes/MidiEventIn.cpp
+        main.cpp)
 
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi)
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libevdev.so.2)

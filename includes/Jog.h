@@ -11,7 +11,7 @@
 #include <vector>
 #include <sstream>
 #include <map>
-#include "MidiEvent.h"
+#include "MidiEventOut.h"
 #include "MidiHelper.h"
 
 using namespace std;

@@ -20,6 +20,7 @@
 #include "Button.h"
 #include "Knob.h"
 #include "Led.h"
+#include "Knob.h"
 #include "EvDevEvent.h"
 #include "AlsaHelper.h"
 
@@ -28,10 +29,11 @@ using namespace std;
 class EvDevHelper{
 private:
     static vector<string> get_evdev_device();
-    static tuple<int, struct libevdev *> get_traktor_controller_device();
+
     static void shutdown_application(int);
     static int traktor_device_id;
 public:
+    static tuple<int, struct libevdev *> get_traktor_controller_device();
     static void read_events_from_device(RtMidiOut *);
     static void initialize_buttons_leds();
     static void shutdown_buttons_leds();

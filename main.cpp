@@ -24,7 +24,7 @@ void shutdown_application(int signum){
 }
 
 void init_application(){
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::debug);
     spdlog::info("[main::init_application] Welcome to Traktor Kontrol S4 Mk1 Driver for Linux!!!");
 
     spdlog::info("[main::init_application] Starting helpers....");

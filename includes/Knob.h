@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <chrono>
-#include "MidiEvent.h"
+#include "MidiEventOut.h"
 #include "MidiHelper.h"
 
 using namespace std;

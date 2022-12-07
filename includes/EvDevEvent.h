@@ -6,9 +6,6 @@
 #include <map>
 #include <linux/types.h>
 #include "Button.h"
-#include "Knob.h"
-#include "Slider.h"
-#include "Jog.h"
 #include "MidiHelper.h"
 #include "spdlog/spdlog.h"
 
@@ -23,13 +20,9 @@ public:
     __u16 code;
     __s32 value;
     timeval time;
-    Button *button_dev;
-    Knob *knob_dev;
-    Slider *slider_dev;
-    Jog *jog_dev;
     static const map<__u16, string> types;
     static const map<__u16, string> codes;
-    void handle_with(RtMidiOut *midi_out, bool, bool, bool, bool);
+    void handle_with(RtMidiOut *midi_out, int, bool, bool, bool, bool);
 };
 
 

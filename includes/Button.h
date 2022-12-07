@@ -5,7 +5,7 @@
 #include <map>
 #include "Led.h"
 #include "AlsaHelper.h"
-#include "MidiEvent.h"
+#include "MidiEventOut.h"
 #include "MidiHelper.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ public:
     int value;
     bool hold;
     static map<int, Button *> buttons_mapping;
-    unsigned int handle_event(RtMidiOut *, bool, bool, bool, bool);
+    unsigned int handle_event(RtMidiOut *, int, bool, bool, bool, bool);
 };
 
 

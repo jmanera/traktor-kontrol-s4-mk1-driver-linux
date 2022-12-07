@@ -14,6 +14,7 @@ class Led {
 private:
 public:
     static const int OFF = 0;
+    static const int LOW = 2;
     static const int MIDDLE = 10;
     static const int ON = 31;
     Led(int code, string name, int value, bool is_meter, bool by_default = true);
