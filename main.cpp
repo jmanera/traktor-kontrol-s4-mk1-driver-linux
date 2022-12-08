@@ -43,8 +43,6 @@ void init_application(){
 
     spdlog::info("[main::init_application] Reading events from Traktor Kontrol S4 Mk1....");
     evdev_helper->read_events_from_device(rtmidi_helper->pMidiOut);
-
-    spdlog::info("[main::init_application] Started!");
 }
 
 int main(int argc, char **argv) {
