@@ -115,7 +115,7 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
               spdlog::debug("[EvDevHelper::read_events_from_device] Toggle BD Changed: {0}", toggle_bd);
               continue;
             }
-          spdlog::debug("[EvDevHelper::read_events_from_device] Event: TypeName: {0} - CodeName: {1} - Type: {2} - Code: {3} - Value: {4} - Time: {5}",
+            spdlog::debug("[EvDevHelper::read_events_from_device] Event: TypeName: {0} - CodeName: {1} - Type: {2} - Code: {3} - Value: {4} - Time: {5}",
                        libevdev_event_type_get_name(ev.type),
                        libevdev_event_code_get_name(ev.type, ev.code),
                        ev.type,
@@ -128,12 +128,20 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
 }
 
+void EvDevHelper::initialize_alsa_device(){
+  spdlog::debug("[EvDevHelper::initialize_alsa_device] Initializing ALSA device....");
+
+  // TODO: Initialize always with LEDs
+
+  spdlog::debug("[EvDevHelper::initialize_alsa_device] FINISHED");
+}
+
 void EvDevHelper::initialize_buttons_leds(){
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Initializing controller leds....");
     int ctls[sizeof(Led::leds_mapping)];
-    traktor_device_id = AlsaHelper::get_traktor_device();
+
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Using device {0}", to_string(traktor_device_id));
-    if (traktor_device_id != EXIT_FAILURE){
+    if (traktor_device_id != -1){
         map<int, Led *>::iterator it;
         int cont = 0;
         for (it = Led::leds_mapping.begin(); it != Led::leds_mapping.end(); it++)

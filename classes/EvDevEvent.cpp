@@ -115,12 +115,12 @@ void EvDevEvent::handle_with(RtMidiOut *midi_out, int controller_id, bool shift_
             jog_dev->value = value;
             int status = jog_dev->handle_event(midi_out, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
             if (status < 0){
-              spdlog::warn("[EvDevEvent::handle_with] Error handling Jog Wheel with code: {0} {1}", to_string(status), strerror(status));
+              spdlog::error("[EvDevEvent::handle_with] Error handling Jog Wheel with code: {0} {1}", to_string(status), strerror(status));
             }
-            spdlog::debug("[EvDevEvent::handle_with] Get Jog Wheel. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
+            spdlog::info("[EvDevEvent::handle_with] Get Jog Wheel. Code: {0}, Name: {1}, Value: {2}", to_string(jog_dev->code), jog_dev->name, to_string(jog_dev->value));
         }
         else{
-            spdlog::debug("[EvDevEvent::handle_with] EV_ABS Event not handled: {0} {1} {2} {3}", to_string(type), to_string(code), to_string(value), to_string(time.tv_sec));
+            spdlog::info("[EvDevEvent::handle_with] EV_ABS Event not handled: {0} {1} {2} {3}", to_string(type), to_string(code), to_string(value), to_string(time.tv_sec));
         }
     }
     else {

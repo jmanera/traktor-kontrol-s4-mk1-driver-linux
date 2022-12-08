@@ -79,7 +79,7 @@ unsigned int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shif
     }
     catch (exception &e){
       spdlog::error("[Slider::handle_event] Error sending message to MIDI out port: {0}", e.what());
-      return EXIT_FAILURE;
+      return -1;
     }
     spdlog::debug("[Slider::handle_event] Sent!");
   }

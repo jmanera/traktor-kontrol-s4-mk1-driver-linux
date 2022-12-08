@@ -8,7 +8,9 @@ map<int, Jog *> Jog::jog_mapping = {
 };
 
 Jog::Jog(){
-  code = value = counter = prev_control_value = sensitivity = updated = -1;
+  code = value = counter = updated = -1;
+  sensitivity = 500;
+  prev_control_value = -1;
   name = "";
 }
 
@@ -16,13 +18,16 @@ Jog::Jog(int in_code, string in_name, int in_value){
   code = in_code;
   name = in_name;
   value = in_value;
+  sensitivity = 500;
+  prev_control_value = -1;
 }
 
 
 unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
+    return EXIT_SUCCESS;
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
-    spdlog::debug("[Jog::handle_event] Button named {0} performed with Code: {1} Led Code: {2} Channel: {3} Value: {4}", name, code, value);
+    spdlog::debug("[Jog::handle_event] Jog Wheel {0} with Code: {1} and Value {2}", name, code, value);
     spdlog::debug("[Jog::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Jog::handle_event] Creating message...");
     std::vector<unsigned char> message;
@@ -75,6 +80,7 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
     else{
       value = get_value_jog();
     }
+
     message.push_back(value);
     spdlog::debug("[Jog::handle_event] Message created!");
     spdlog::debug("[Jog::handle_event] Sending to MIDI Outport....");
@@ -96,6 +102,7 @@ int Jog::get_value_jog(){
   if (prev_control_value == -1){
     prev_control_value = value;
     updated = MidiEventOut::get_time();
+    spdlog::debug("[Jog::get_value_jog] First occurence Updated: {0} Value: {1}", updated, prev_control_value);
     return -1;
   }
 
@@ -111,9 +118,10 @@ int Jog::get_value_jog(){
 
   prev_control_value = value;
 
-  if ((MidiEventOut::get_time() - updated) < sensitivity){
+  if ((abs(updated) - abs(MidiEventOut::get_time())) < sensitivity){
     counter += diff;
-    return -1;
+    spdlog::warn("updated {0} {1}", abs(updated), abs(MidiEventOut::get_time()));
+    return 0;
   }
   else{
     value = counter + diff;
@@ -132,5 +140,4 @@ int Jog::get_value_jog(){
 
     return value;
   }
-  return EXIT_SUCCESS;
 }

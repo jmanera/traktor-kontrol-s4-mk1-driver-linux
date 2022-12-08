@@ -2,6 +2,7 @@
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVHELPER_H
 
 #include <cstring>
+#include <unistd.h>
 #include <stdlib.h>
 #include <filesystem>
 #include <vector>
@@ -31,11 +32,21 @@ private:
     static vector<string> get_evdev_device();
 
     static void shutdown_application(int);
-    static int traktor_device_id;
+
 public:
+    EvDevHelper(){
+      traktor_device_id = AlsaHelper::get_traktor_device();
+      if (traktor_device_id == -1){
+        spdlog::error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
+        exit(EXIT_FAILURE);
+      }
+
+    }
+    static int traktor_device_id;
     static tuple<int, struct libevdev *> get_traktor_controller_device();
     static void read_events_from_device(RtMidiOut *);
     static void initialize_buttons_leds();
+    static void initialize_alsa_device();
     static void shutdown_buttons_leds();
 };
 

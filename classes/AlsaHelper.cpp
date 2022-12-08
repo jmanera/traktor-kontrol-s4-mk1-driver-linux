@@ -25,7 +25,7 @@ void AlsaHelper::check(int err, const char *f)
 #define CHECK(f) check(f, #f)
 
 int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
-    spdlog::debug("[AlsaHelper::show_control_id] Setting value {0} to Led id {1} with value {2}...", to_string(card_id), to_string(control_id), to_string(led_value));
+    spdlog::debug("[AlsaHelper::set_led_value] Setting value {0} to Led id {1} with value {2}...", to_string(card_id), to_string(control_id), to_string(led_value));
     if (Led::leds_mapping.find(control_id) == Led::leds_mapping.end()) {
       spdlog::debug("[AlsaHelper::set_led_value] Control ID: {0} not found", control_id);
       return EXIT_FAILURE;
@@ -35,17 +35,17 @@ int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
     snd_ctl_elem_value_t *value;
 
     string control_name = "hw:" + to_string(card_id);
-    spdlog::debug("[AlsaHelper::show_control_id] Controller name: {0}", control_name);
-    CHECK(snd_ctl_open(&ctl, control_name.c_str(), 0));
+    spdlog::debug("[AlsaHelper::set_led_value] Controller name: {0}", control_name);
+    CHECK(snd_ctl_open(&ctl, control_name.c_str(), SND_CTL_ASYNC));
 
     snd_ctl_elem_value_alloca(&value);
     snd_ctl_elem_value_set_interface(value, SND_CTL_ELEM_IFACE_MIXER);
     snd_ctl_elem_value_set_numid(value, control_id);
     snd_ctl_elem_value_set_integer(value, 0, led_value);
-    CHECK(snd_ctl_elem_write(ctl, value));
+    spdlog::debug("[AlsaHelper::set_led_value] snd_ctl_elem_write returns {0}", snd_ctl_elem_write(ctl, value));
 
     snd_ctl_close(ctl);
-    spdlog::debug("[AlsaHelper::show_control_id] FINISHED");
+    spdlog::debug("[AlsaHelper::set_led_value] FINISHED");
     return 0;
 }
 
@@ -110,5 +110,5 @@ int AlsaHelper::get_traktor_device(){
         snd_card_next (&card);
     }
     spdlog::debug("[AlsaHelper::show_control_id] NO DEVICES FOUND!");
-    return EXIT_FAILURE;
+    return -1;
 }

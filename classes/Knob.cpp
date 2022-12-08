@@ -111,7 +111,7 @@ unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_
 
     if (value < 0){
       spdlog::debug("[Knob::handle_event] Message didn't sent!");
-      return EXIT_FAILURE;
+      return -1;
     }
     spdlog::debug("[Knob::handle_event] Knob named {0} performed with Code:{1} Value: {2}", name, code, value);
     message.push_back(value);
@@ -123,11 +123,11 @@ unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_
     }
     catch (exception &e){
       spdlog::error("[Knob::handle_event] Error sending message to MIDI out port: {0}", e.what());
-      return EXIT_FAILURE;
+      return -1;
     }
     spdlog::debug("[Knob::handle_event] Sent!");
 
-    return EXIT_SUCCESS;
+    return -1;
   }
 
   return EXIT_SUCCESS;
@@ -153,7 +153,7 @@ int Knob::get_value_gain_rot() {
   }
   prev_control_value = value;
 
-  if ((MidiEventOut::get_time() - updated) < 0.005){
+  if ((MidiEventOut::get_time() - updated) < 5){
     counter += diff;
     return -1;
   }
@@ -190,7 +190,7 @@ int Knob::get_value_rot() {
 
   prev_control_value = value;
 
-  if ((MidiEventOut::get_time() - updated) < 0.005){
+  if ((MidiEventOut::get_time() - updated) < 5){
     counter += diff;
     return -1;
   }

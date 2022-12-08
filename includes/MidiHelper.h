@@ -27,6 +27,7 @@ private:
     bool close_input_port();
     bool close_output_port();
     static void show_midi_information(MidiHelper *);
+    int traktor_device_id;
 
 };
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIHELPER_H

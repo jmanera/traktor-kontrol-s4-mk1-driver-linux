@@ -33,8 +33,10 @@ map<int, Button *> Button::buttons_mapping = {
         { 285, new Button(285, "SNAP", 7, 2, 0) },
         { 286, new Button(286, "MASTER", 6, 2, 0) },
         { 287, new Button(287, "QUANT", 10, 2, 0) },
+        { 288, new Button(288, "CH3_EARPHONES", 50, 3, 0) },
         { 289, new Button(289, "CH1_EARPHONES", 24, 1, 0) },
         { 290, new Button(290, "CH2_EARPHONES", 37, 2, 0) },
+        { 291, new Button(291, "CH4_EARPHONES", 63, 4, 0) },
         { 292, new Button(292, "BROWSE_KNOB", -1, 2, 0) },
         { 296, new Button(296, "CH2_TEMPO_UP", 126, 2, 0) },
         { 297, new Button(297, "CH2_TEMPO_DOWN", 127, 2, 0) },
@@ -88,16 +90,6 @@ Button::Button(){
 }
 
 unsigned int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
-  // Set LED VALUE
-  int output_value = Led::MIDDLE;
-  if (value == 1){
-    output_value = Led::ON;
-  }
-
-  if ((value > 0) && (led_code > 0) && (output_value > 0))
-    AlsaHelper::set_led_value(controller_id, led_code, output_value);
-
-  // Get Button MIDI code
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
@@ -153,7 +145,7 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool s
     }
     catch (exception &e){
       spdlog::error("[Button::handle_event] Error sending message to MIDI out port: {0}", e.what());
-      return EXIT_FAILURE;
+      return -1;
     }
     spdlog::debug("[Button::handle_event] Sent!");
   }

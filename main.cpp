@@ -31,6 +31,10 @@ void init_application(){
     evdev_helper = new EvDevHelper();
     rtmidi_helper = new MidiHelper();
 
+    spdlog::info("[main::init_application] Initializing device....");
+    EvDevHelper::initialize_alsa_device();
+    spdlog::info("[main::init_application] DONE....");
+
     spdlog::info("[main::init_application] Initializing leds....");
     EvDevHelper::initialize_buttons_leds();
 
