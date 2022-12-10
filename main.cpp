@@ -1,12 +1,7 @@
-//
-// Created by aspgems on 17/11/22.
-//
 #include <iostream>
 #include <cstdlib>
 #include "includes/MidiHelper.h"
 #include "includes/EvDevHelper.h"
-#include "includes/AlsaHelper.h"
-#include "spdlog/spdlog.h"
 
 using namespace std;
 

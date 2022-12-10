@@ -25,7 +25,7 @@ Jog::Jog(int in_code, string in_name, int in_value){
 
 unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
-    return EXIT_SUCCESS;
+    //return EXIT_SUCCESS;
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Jog::handle_event] Jog Wheel {0} with Code: {1} and Value {2}", name, code, value);
     spdlog::debug("[Jog::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);

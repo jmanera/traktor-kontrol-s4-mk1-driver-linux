@@ -68,7 +68,6 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
             full_brightness = floor(light / 21);
             int partial = light % 21;
             for (int i = 0; i < full_brightness; i++){
-
               AlsaHelper::set_led_value(data->traktor_device_id, stoi(control_array[i]), Led::ON);
             }
             if (partial > 0){
