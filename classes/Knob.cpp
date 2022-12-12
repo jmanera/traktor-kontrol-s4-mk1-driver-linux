@@ -117,8 +117,8 @@ unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_
     message.push_back(value);
     spdlog::debug("[Knob::handle_event] Message created!");
     spdlog::debug("[Knob::handle_event] Sending to MIDI Outport....");
+    spdlog::debug("[Knob::handle_event] Message {0} - {1} - {2}....", message[0], message[1], message[2]);
     try{
-      spdlog::debug("[Knob::handle_event] Message {0} - {1} - {2}....", message[0], message[1], message[2]);
       midi_out->sendMessage(&message);
     }
     catch (exception &e){
@@ -130,7 +130,7 @@ unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_
     return -1;
   }
 
-  return EXIT_SUCCESS;
+  return 0;
 }
 
 int Knob::get_value_gain_rot() {

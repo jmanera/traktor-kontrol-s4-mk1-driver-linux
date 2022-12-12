@@ -46,8 +46,8 @@ public:
     static tuple<int, struct libevdev *> get_traktor_controller_device();
     static void read_events_from_device(RtMidiOut *);
     static void initialize_buttons_leds();
-    static void initialize_alsa_device();
     static void shutdown_buttons_leds();
+    static void check_evdev_status();
 };
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_EVDEVHELPER_H

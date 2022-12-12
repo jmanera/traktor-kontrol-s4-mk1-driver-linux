@@ -84,5 +84,5 @@ unsigned int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shif
     spdlog::debug("[Slider::handle_event] Sent!");
   }
 
-  return EXIT_SUCCESS;
+  return 0;
 }

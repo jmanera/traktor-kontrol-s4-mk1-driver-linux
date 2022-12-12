@@ -31,7 +31,6 @@ tuple<int, struct libevdev *> EvDevHelper::get_traktor_controller_device(){
         const int fd = open(file.c_str(), O_RDONLY | O_NONBLOCK);
         spdlog::debug("[EvDevHelper::get_traktor_controller_device] FD obtained: {0}", fd);
         try{
-            //auto evdev = evdevw::Evdev::create_from_fd(fd);
             int evdev = libevdev_new_from_fd(fd, &dev);
             if (evdev < 0) {
                 spdlog::error("[EvDevHelper::get_traktor_controller_device] Failed to init libevdev ({0})", strerror(-evdev));
@@ -48,6 +47,27 @@ tuple<int, struct libevdev *> EvDevHelper::get_traktor_controller_device(){
     }
     spdlog::debug("[EvDevHelper::get_traktor_controller_device] FINISHED");
     return make_tuple(-1, dev);
+}
+
+void EvDevHelper::check_evdev_status(){
+  struct libevdev *dev = NULL;
+  int rc = 1;
+
+  tie(rc, dev) = get_traktor_controller_device();
+  if (rc < 0) {
+    spdlog::error("[EvDevHelper::check_evdev_status] Failed to init evdev device: {0}", strerror(-rc));
+    exit(EXIT_FAILURE);
+  }
+
+  do{
+    struct input_event ev;
+    rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+    spdlog::debug("[EvDevHelper::check_evdev_status] Check EvDev Status: {0}", rc);
+
+    usleep(3000000);
+  } while(rc != 1 && rc != 0 && rc != -EAGAIN);
+
+  spdlog::debug("[EvDevHelper::check_evdev_status] EvDev Device started!");
 }
 
 void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
@@ -128,14 +148,6 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
 }
 
-void EvDevHelper::initialize_alsa_device(){
-  spdlog::debug("[EvDevHelper::initialize_alsa_device] Initializing ALSA device....");
-
-  // TODO: Initialize always with LEDs
-
-  spdlog::debug("[EvDevHelper::initialize_alsa_device] FINISHED");
-}
-
 void EvDevHelper::initialize_buttons_leds(){
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Initializing controller leds....");
     int ctls[sizeof(Led::leds_mapping)];
@@ -185,4 +197,3 @@ void EvDevHelper::shutdown_buttons_leds(){
     AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
     spdlog::debug("[EvDevHelper::shutdown_buttons_leds] FINISHED");
 }
-

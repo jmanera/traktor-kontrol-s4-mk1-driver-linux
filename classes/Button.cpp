@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 21/11/22.
-//
-
 #include "Button.h"
 
 map<int, Button *> Button::buttons_mapping = {
@@ -63,21 +59,23 @@ map<int, Button *> Button::buttons_mapping = {
         { 323, new Button(323, "FX1_2", 156, 1, 0) },
         { 324, new Button(324, "FX1_3", 157, 1, 0) },
         { 325, new Button(325, "FX1_MODE", 158, 1, 0) },
+        { 326, new Button(326, "CH3_GAIN", -1, 3, 0) },
         { 327, new Button(327, "CH1_GAIN", -1, 1, 0) },
         { 328, new Button(328, "BTN_TOOL_QUINTTAP", -1, 1, 0) },
-        { 328, new Button(328, "BTN_STYLUS3", -1, 1, 0) },
+        { 329, new Button(329, "BTN_STYLUS3", -1, 1, 0) },
         { 330, new Button(330, "CH1_FX_CHANNEL_1", 25, 1, 0) },
         { 331, new Button(331, "CH1_FX_CHANNEL_2", 26, 1, 0) },
         { 332, new Button(332, "CH2_FX_CHANNEL_1", 38, 2, 0) },
         { 333, new Button(333, "CH2_FX_CHANNEL_2", 39, 2, 0) },
         { 334, new Button(334, "BTN_TOOL_TRIPLETAP", 39, 2, 0) },
-        { 335, new Button(334, "BTN_TOOL_QUADTAP", 39, 2, 0) },
+        { 335, new Button(335, "BTN_TOOL_QUADTAP", 39, 2, 0) },
         { 345, new Button(345, "FX2_DRY_WET", 159, 2, 0) },
         { 346, new Button(346, "FX2_1", 160, 2, 0) },
         { 347, new Button(347, "FX2_2", 161, 2, 0) },
         { 348, new Button(348, "FX2_3", 162, 2, 0) },
         { 349, new Button(349, "FX2_MODE", 163, 2, 0) },
-        { 350, new Button(296, "CH2_GAIN", -1, 2, 0)}
+        { 350, new Button(350, "CH2_GAIN", -1, 2, 0)},
+        { 351, new Button(351, "CH4_GAIN", -1, 4, 0)}
 };
 
 Button::Button(int in_code, string in_name, int in_led, int in_channel, int in_value = 0) {
@@ -99,8 +97,7 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool s
     spdlog::debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
     spdlog::debug("[Button::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Button::handle_event] Creating message...");
-    int channel = -1;
-    int status = -1;
+    int channel = -1, status = -1;
     if ((midi_event->channel_byte == 0xb0) || (midi_event->channel_byte == 0xb2)){
       if (shift_ch1 == true && toggle_ac == false){
         channel = midi_event->tgl_off_shf_on_channel_byte;
@@ -154,5 +151,5 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool s
     spdlog::debug("[Button::handle_event] Sent!");
   }
 
-  return EXIT_SUCCESS;
+  return 0;
 }

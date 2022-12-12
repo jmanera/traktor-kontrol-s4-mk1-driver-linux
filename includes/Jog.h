@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 22/11/22.
-//
-
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_JOG_H
 

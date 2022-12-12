@@ -7,8 +7,6 @@
 #include "Led.h"
 #include "spdlog/spdlog.h"
 
-
-
 using namespace std;
 
 class AlsaHelper {

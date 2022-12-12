@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 23/11/22.
-//
-
 #include "AlsaHelper.h"
 
 #define CARD_NAME "Traktor Kontrol S4"
@@ -28,7 +24,7 @@ int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
     spdlog::debug("[AlsaHelper::set_led_value] Setting value {0} to Led id {1} with value {2}...", to_string(card_id), to_string(control_id), to_string(led_value));
     if (Led::leds_mapping.find(control_id) == Led::leds_mapping.end()) {
       spdlog::debug("[AlsaHelper::set_led_value] Control ID: {0} not found", control_id);
-      return EXIT_FAILURE;
+      return -1;
     }
 
     snd_ctl_t *ctl;
@@ -36,7 +32,7 @@ int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
 
     string control_name = "hw:" + to_string(card_id);
     spdlog::debug("[AlsaHelper::set_led_value] Controller name: {0}", control_name);
-    CHECK(snd_ctl_open(&ctl, control_name.c_str(), SND_CTL_ASYNC));
+    CHECK(snd_ctl_open(&ctl, control_name.c_str(), SND_CTL_NONBLOCK));
 
     snd_ctl_elem_value_alloca(&value);
     snd_ctl_elem_value_set_interface(value, SND_CTL_ELEM_IFACE_MIXER);
@@ -62,8 +58,7 @@ int AlsaHelper::bulk_led_value(int card_id, int control_ids[], int led_value, in
 
 int AlsaHelper::get_traktor_device(){
     spdlog::debug("[AlsaHelper::show_control_id] Looking for Traktor Kontrol S4 ALSA Device....");
-    int card, dev;
-    card = dev = -1;
+    int card = -1, dev = -1;
     char *name = NULL;
 
     snd_ctl_t *handle = NULL;

@@ -9,8 +9,8 @@ map<int, Jog *> Jog::jog_mapping = {
 
 Jog::Jog(){
   code = value = counter = updated = -1;
-  sensitivity = 500;
-  prev_control_value = -1;
+  sensitivity = 5;
+  prev_control_value = -1000;
   name = "";
 }
 
@@ -18,21 +18,19 @@ Jog::Jog(int in_code, string in_name, int in_value){
   code = in_code;
   name = in_name;
   value = in_value;
-  sensitivity = 500;
-  prev_control_value = -1;
+  sensitivity = 10;
+  prev_control_value = -1000;
 }
-
 
 unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
-    //return EXIT_SUCCESS;
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Jog::handle_event] Jog Wheel {0} with Code: {1} and Value {2}", name, code, value);
     spdlog::debug("[Jog::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Jog::handle_event] Creating message...");
     std::vector<unsigned char> message;
-    int channel = -1;
-    int status = -1;
+    unsigned char channel = midi_event->channel_byte;
+    unsigned char status = midi_event->status_byte;
     if ((midi_event->channel_byte == 0xb0) || (midi_event->channel_byte == 0xb2)){
       if (shift_ch1 == true && toggle_ac == false){
         channel = midi_event->tgl_off_shf_on_channel_byte;
@@ -72,16 +70,22 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
     }
     message.push_back(channel);
     message.push_back(status);
+    int midi_value = 0;
     if (midi_event->controller_type == "JOG_TOUCH"){
       if (value >= 3050){
-        value = 0x7f;
+        midi_value = 0x7f;
       }
     }
     else{
-      value = get_value_jog();
+      midi_value = get_value_jog();
     }
 
-    message.push_back(value);
+    if (midi_value == -1000){
+      return 0;
+    }
+
+    message.push_back(midi_value);
+    spdlog::debug("[Jog::handle_event] Message Channel: {0} Status: {1} Value: {2}", message[0], message[1], message[2]);
     spdlog::debug("[Jog::handle_event] Message created!");
     spdlog::debug("[Jog::handle_event] Sending to MIDI Outport....");
     try{
@@ -89,21 +93,21 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
     }
     catch (exception &e){
       spdlog::error("[Jog::handle_event] Error sending message to MIDI out port: {0}", e.what());
-      return EXIT_FAILURE;
+      return -1;
     }
     spdlog::debug("[Jog::handle_event] Sent!");
   }
 
-  return EXIT_SUCCESS;
+  return 0;
 }
 
 int Jog::get_value_jog(){
   int diff = -1;
-  if (prev_control_value == -1){
+  if (prev_control_value == -1000){
     prev_control_value = value;
     updated = MidiEventOut::get_time();
-    spdlog::debug("[Jog::get_value_jog] First occurence Updated: {0} Value: {1}", updated, prev_control_value);
-    return -1;
+    spdlog::debug("[Jog::get_value_jog] First occurrence Updated: {0} Value: {1}", updated, prev_control_value);
+    return -1000;
   }
 
   if (value <= 255 && prev_control_value >= 767){
@@ -118,26 +122,26 @@ int Jog::get_value_jog(){
 
   prev_control_value = value;
 
-  if ((abs(updated) - abs(MidiEventOut::get_time())) < sensitivity){
+  if ((MidiEventOut::get_time() - updated) < sensitivity){
     counter += diff;
-    spdlog::warn("updated {0} {1}", abs(updated), abs(MidiEventOut::get_time()));
-    return 0;
+    return -1000;
   }
   else{
-    value = counter + diff;
+    int midi_value = counter + diff;
+
     counter = 0;
     updated = MidiEventOut::get_time();
 
-    if ((value >= -64) && (value < 0)){
-      value = 128 + value;
+    if ((midi_value >= -64) && (midi_value < 0)){
+      midi_value = 128 + midi_value;
     }
-    else if(value < -64){
-      value = 64;
+    else if(midi_value < -64){
+      midi_value = 64;
     }
-    else if (value >= 63){
-      value = 63;
+    else if (midi_value >= 63){
+      midi_value = 63;
     }
 
-    return value;
+    return midi_value;
   }
 }

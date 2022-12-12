@@ -82,6 +82,18 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
             AlsaHelper::set_led_value(data->traktor_device_id, stoi(control_array[0]), Led::OFF);
           }
         }
+        else{
+          if (control_id != "-"){
+            int control_id_num = stoi(control_id);
+            if ((control_id_num >= 1) && (control_id_num <= 163)){
+              if (value >= 1)
+                AlsaHelper::set_led_value(data->traktor_device_id, control_id_num, Led::ON);
+              else
+                AlsaHelper::set_led_value(data->traktor_device_id, control_id_num, Led::MIDDLE);
+            }
+          }
+
+        }
       }
     }
     catch (...){ }

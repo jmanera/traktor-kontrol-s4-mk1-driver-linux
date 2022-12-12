@@ -18,7 +18,6 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         includes/MidiEventOut.h
         includes/AlsaHelper.h
         includes/ConfigHelper.h
-        includes/rapidcsv.h
         includes/MidiEventIn.h
         classes/Button.cpp
         classes/MidiHelper.cpp

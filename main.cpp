@@ -19,22 +19,21 @@ void shutdown_application(int signum){
 }
 
 void init_application(){
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     spdlog::info("[main::init_application] Welcome to Traktor Kontrol S4 Mk1 Driver for Linux!!!");
 
     spdlog::info("[main::init_application] Starting helpers....");
     evdev_helper = new EvDevHelper();
     rtmidi_helper = new MidiHelper();
 
-    spdlog::info("[main::init_application] Initializing device....");
-    EvDevHelper::initialize_alsa_device();
-    spdlog::info("[main::init_application] DONE....");
+    spdlog::info("[main::init_application] Get MIDI information....");
+    MidiHelper::show_midi_information(rtmidi_helper);
+
+    spdlog::info("[main::init_application] Initializing EvDev device....");
+    EvDevHelper::check_evdev_status();
 
     spdlog::info("[main::init_application] Initializing leds....");
     EvDevHelper::initialize_buttons_leds();
-
-    spdlog::info("[main::init_application] Get MIDI information....");
-    MidiHelper::show_midi_information(rtmidi_helper);
 
     spdlog::info("[main::init_application] Reading events from Traktor Kontrol S4 Mk1....");
     evdev_helper->read_events_from_device(rtmidi_helper->pMidiOut);
@@ -46,4 +45,6 @@ int main(int argc, char **argv) {
     signal(SIGSEGV,shutdown_application);
 
     init_application();
+
+    shutdown_application(0);
 }

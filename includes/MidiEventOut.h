@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 23/11/22.
-//
-
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIEVENT_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIEVENT_H
 
@@ -9,7 +5,6 @@
 #include <map>
 #include <unistd.h>
 #include <chrono>
-#define SLEEP(milliseconds) usleep((unsigned long) (milliseconds * 1000))
 
 using namespace std;
 

@@ -2,8 +2,8 @@
 using namespace std;
 
 map<int, Led *> Led::leds_mapping = {
-        { 1, new Led(1, "QUANT INDICATOR", Led::OFF, false, false) },
-        { 2, new Led(2, "HEADPHONE INDICATOR", Led::OFF, false, false) },
+        {1, new Led(1, "QUANT INDICATOR", Led::OFF, false, false) },
+        {2, new Led(2, "HEADPHONE INDICATOR", Led::OFF, false, false) },
         {3, new Led(3, "MASTER INDICATOR", Led::OFF, false)},
         {4, new Led(4, "SNAP INDICATOR", Led::OFF, false, false)},
         {5, new Led(5, "WARNING INDICATOR", Led::OFF, false, false)},
