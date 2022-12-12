@@ -1,12 +1,7 @@
-//
-// Created by aspgems on 17/11/22.
-//
 #include <iostream>
 #include <cstdlib>
 #include "includes/MidiHelper.h"
 #include "includes/EvDevHelper.h"
-#include "includes/AlsaHelper.h"
-#include "spdlog/spdlog.h"
 
 using namespace std;
 
@@ -31,16 +26,17 @@ void init_application(){
     evdev_helper = new EvDevHelper();
     rtmidi_helper = new MidiHelper();
 
-    spdlog::info("[main::init_application] Initializing leds....");
-    EvDevHelper::initialize_buttons_leds();
-
     spdlog::info("[main::init_application] Get MIDI information....");
     MidiHelper::show_midi_information(rtmidi_helper);
 
+    spdlog::info("[main::init_application] Initializing EvDev device....");
+    EvDevHelper::check_evdev_status();
+
+    spdlog::info("[main::init_application] Initializing leds....");
+    EvDevHelper::initialize_buttons_leds();
+
     spdlog::info("[main::init_application] Reading events from Traktor Kontrol S4 Mk1....");
     evdev_helper->read_events_from_device(rtmidi_helper->pMidiOut);
-
-    spdlog::info("[main::init_application] Started!");
 }
 
 int main(int argc, char **argv) {
@@ -49,4 +45,6 @@ int main(int argc, char **argv) {
     signal(SIGSEGV,shutdown_application);
 
     init_application();
+
+    shutdown_application(0);
 }

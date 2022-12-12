@@ -2,8 +2,8 @@
 using namespace std;
 
 map<int, Led *> Led::leds_mapping = {
-        { 1, new Led(1, "QUANT INDICATOR", Led::OFF, false) },
-        { 2, new Led(2, "HEADPHONE INDICATOR", Led::OFF, false, false) },
+        {1, new Led(1, "QUANT INDICATOR", Led::OFF, false, false) },
+        {2, new Led(2, "HEADPHONE INDICATOR", Led::OFF, false, false) },
         {3, new Led(3, "MASTER INDICATOR", Led::OFF, false)},
         {4, new Led(4, "SNAP INDICATOR", Led::OFF, false, false)},
         {5, new Led(5, "WARNING INDICATOR", Led::OFF, false, false)},
@@ -24,7 +24,7 @@ map<int, Led *> Led::leds_mapping = {
         {20, new Led(20, "CH1 VOL METER 5", Led::OFF, false, false)},
         {21, new Led(21, "CH1 VOL METER 6", Led::OFF, false, false)},
         {22, new Led(22, "CH1 VOL METER CLIP", Led::OFF, false, false)},
-        {23, new Led(23, "CH1 ACTIVE", Led::OFF, false)},
+        {23, new Led(23, "CH1 ACTIVE", Led::OFF, false, true)},
         {24, new Led(24, "CH1 EARPHONES", Led::OFF, false)},
         {25, new Led(25, "CH1 FX1 ENABLE", Led::OFF, false)},
         {26, new Led(26, "CH1 FX2 ENABLE", Led::OFF, false)},
@@ -87,7 +87,7 @@ map<int, Led *> Led::leds_mapping = {
         {83, new Led(83, "CH2 / CH4 TEMPO DOWN", Led::OFF, false)},
         {84, new Led(84, "CH1 / CH3 MASTER", Led::OFF, false, false)},
         {85, new Led(85, "CH1 / CH3 KEYLOCK", Led::OFF, false, false)},
-        {86, new Led(62, "CH1 DECK A", Led::OFF, false)},
+        {86, new Led(86, "CH1 DECK A", Led::OFF, false)},
         {87, new Led(87, "CH3 DECK C", Led::OFF, false, false)},
         {88, new Led(88, "CH1 / CH3 SAMPLES", Led::OFF, false, false)},
         {89, new Led(89, "CH1 / CH3 ON AIR", Led::OFF, false, false)},
@@ -131,7 +131,7 @@ map<int, Led *> Led::leds_mapping = {
         {127, new Led(127, "CH2 / CH4 TEMPO DOWN", Led::OFF, false)},
         {128, new Led(128, "CH2 / CH4 MASTER", Led::OFF, false, false)},
         {129, new Led(129, "CH2 / CH4 KEYLOCK", Led::OFF, false, false)},
-        {130, new Led(130, "CH2 DECK B", Led::OFF, false)},
+        {130, new Led(130, "CH2 DECK B", Led::OFF, false, true)},
         {131, new Led(131, "CH4 DECK D", Led::OFF, false, false)},
         {132, new Led(132, "CH2 / CH4 SAMPLES", Led::OFF, false, false)},
         {133, new Led(133, "CH2 / CH4 ON AIR", Led::OFF, false, false)},
