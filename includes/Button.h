@@ -14,7 +14,7 @@ class Button{
 private:
 
 public:
-    Button(int, string, int, int, int);
+    Button(int code, string name, int led_code, int channel, int value);
     Button();
     int code;
     string name;
@@ -23,8 +23,7 @@ public:
     int value;
     bool hold;
     static map<int, Button *> buttons_mapping;
-    unsigned int handle_event(RtMidiOut *, int, bool, bool, bool, bool);
+    unsigned int handle_event(RtMidiOut *midi_out, int controller_id, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd);
 };
-
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_BUTTON_H

@@ -11,11 +11,11 @@ using namespace std;
 
 class AlsaHelper {
 private:
-    static void show_control_id(snd_ctl_elem_id_t *);
+    static void show_control_id(snd_ctl_elem_id_t *id);
     static void check(int err, const char *f);
 public:
-    static int set_led_value(int, int, int);
-    static int bulk_led_value(int, int [], int, int);
+    static int set_led_value(int card_id, int control_id, int led_value);
+    static int bulk_led_value(int card_id, int control_ids[], int led_value, int num_controls);
     static int get_traktor_device();
 };
 

@@ -22,6 +22,11 @@ void AlsaHelper::check(int err, const char *f)
 
 int AlsaHelper::set_led_value(int card_id, int control_id, int led_value){
     spdlog::debug("[AlsaHelper::set_led_value] Setting value {0} to Led id {1} with value {2}...", to_string(card_id), to_string(control_id), to_string(led_value));
+    if (control_id == 0){
+      spdlog::debug("[AlsaHelper::set_led_value] Control ID: {0} not found", control_id);
+      return -1;
+    }
+
     if (Led::leds_mapping.find(control_id) == Led::leds_mapping.end()) {
       spdlog::debug("[AlsaHelper::set_led_value] Control ID: {0} not found", control_id);
       return -1;
@@ -50,6 +55,7 @@ int AlsaHelper::bulk_led_value(int card_id, int control_ids[], int led_value, in
     spdlog::debug("[AlsaHelper::show_control_id] Initiating bulk_led_value in device {0}...", control_name);
 
     for (int ctl_id = 0; ctl_id < num_controls; ctl_id++){
+      if (control_ids[ctl_id] != 0)
         set_led_value(card_id, control_ids[ctl_id], led_value);
     }
     spdlog::debug("[AlsaHelper::show_control_id] FINISHED");

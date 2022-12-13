@@ -60,7 +60,7 @@ map<int, Button *> Button::buttons_mapping = {
         { 324, new Button(324, "FX1_3", 157, 1, 0) },
         { 325, new Button(325, "FX1_MODE", 158, 1, 0) },
         { 326, new Button(326, "CH3_GAIN", -1, 3, 0) },
-        { 327, new Button(327, "CH1_GAIN", -1, 1, 0) },
+        { 327, new Button(327, "CH1_GAIN", -1, 1, 1) },
         { 328, new Button(328, "BTN_TOOL_QUINTTAP", -1, 1, 0) },
         { 329, new Button(329, "BTN_STYLUS3", -1, 1, 0) },
         { 330, new Button(330, "CH1_FX_CHANNEL_1", 25, 1, 0) },
