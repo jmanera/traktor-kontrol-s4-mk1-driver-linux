@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int EvDevHelper::traktor_device_id = 0;
+int EvDevHelper::traktor_device_id_ = 0;
 bool shift_ch1 = false;
 bool shift_ch2 = false;
 bool toggle_ac = false;
@@ -101,17 +101,17 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                 int to_on[] = {75, 87, 40, 41, 49};
                 int to_off[] = {23, 14, 15, 86};
 
-                AlsaHelper::bulk_led_value(traktor_device_id, to_on, Led::ON, 5);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_off, Led::OFF, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_on, Led::ON, 5);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               else{
                 int to_on[] = {86, 23, 14, 15};
                 int to_low[] = {75};
                 int to_off[] = {87, 40, 41, 49};
 
-                AlsaHelper::bulk_led_value(traktor_device_id, to_on, Led::ON, 4);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_low, Led::MIDDLE, 1);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_off, Led::OFF, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_on, Led::ON, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_low, Led::MIDDLE, 1);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               spdlog::debug("[EvDevHelper::read_events_from_device] Toggle AC Changed: {0}", toggle_ac);
               continue;
@@ -121,16 +121,16 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
               if (toggle_bd == true){
                 int to_on[] = {53, 54, 62, 131, 119};
                 int to_off[] = {130, 36, 27, 28};
-                AlsaHelper::bulk_led_value(traktor_device_id, to_on, Led::ON, 5);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_off, Led::OFF, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_on, Led::ON, 5);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               else{
                 int to_on[] = {27, 28, 36, 130};
                 int to_low[] = { 119 };
                 int to_off[] = {131, 62, 53, 54};
-                AlsaHelper::bulk_led_value(traktor_device_id, to_on, Led::ON, 4);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_low, Led::MIDDLE, 1);
-                AlsaHelper::bulk_led_value(traktor_device_id, to_off, Led::OFF, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_on, Led::ON, 4);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_low, Led::MIDDLE, 1);
+                AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               spdlog::debug("[EvDevHelper::read_events_from_device] Toggle BD Changed: {0}", toggle_bd);
               continue;
@@ -143,36 +143,36 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                        ev.value,
                        ev.time.tv_sec);
             EvDevEvent *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time);
-            evdev_event->handle_with(pMidiOut, traktor_device_id, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
+            evdev_event->handle_with(pMidiOut, traktor_device_id_, shift_ch1, shift_ch2, toggle_ac, toggle_bd);
         }
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
 }
 
 void EvDevHelper::initialize_buttons_leds(){
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] Initializing controller leds....");
-    int ctls[sizeof(Led::leds_mapping)];
+    int control_ids[sizeof(Led::leds_mapping)];
 
-    spdlog::debug("[EvDevHelper::initialize_buttons_leds] Using device {0}", to_string(traktor_device_id));
-    if (traktor_device_id != -1){
+    spdlog::debug("[EvDevHelper::initialize_buttons_leds] Using device {0}", to_string(traktor_device_id_));
+    if (traktor_device_id_ != -1){
         map<int, Led *>::iterator it;
         int cont = 0;
         for (it = Led::leds_mapping.begin(); it != Led::leds_mapping.end(); it++)
         {
             if (it->second->by_default == true) {
                 spdlog::debug("[EvDevHelper::initialize_buttons_leds] Preparing for init Led Code {0}", to_string(it->second->code));
-                ctls[cont] = it->second->code;
+                control_ids[cont] = it->second->code;
                 if (((cont % 5) == 0) && (cont > 0)){
-                    AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
+                    AlsaHelper::bulk_led_value(traktor_device_id_, control_ids, Led::MIDDLE, cont + 1);
                     cont = 0;
                 }
                 else
                     cont++;
             }
         }
-        AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::MIDDLE, cont + 1);
+        AlsaHelper::bulk_led_value(traktor_device_id_, control_ids, Led::MIDDLE, cont + 1);
     }
     else{
-        spdlog::error("[EvDevHelper::initialize_buttons_leds] Cannot use {0} device", to_string(traktor_device_id));
+        spdlog::error("[EvDevHelper::initialize_buttons_leds] Cannot use {0} device", to_string(traktor_device_id_));
         exit(EXIT_FAILURE);
     }
     spdlog::debug("[EvDevHelper::initialize_buttons_leds] FINISHED");
@@ -181,19 +181,19 @@ void EvDevHelper::initialize_buttons_leds(){
 void EvDevHelper::shutdown_buttons_leds(){
     spdlog::debug("[EvDevHelper::shutdown_buttons_leds] Shutting down controller leds....");
     map<int, Led *>::iterator it;
-    int ctls[sizeof(Led::leds_mapping)];
+    int control_ids[sizeof(Led::leds_mapping)];
     int cont = 0;
     for (it = Led::leds_mapping.begin(); it != Led::leds_mapping.end(); it++)
     {
-        ctls[cont] = it->second->code;
-        spdlog::debug("Preparing for shutdown Led Code {0}", to_string(it->second->code));
-        if (((cont % 5) == 0) && (cont > 0)){
-            AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
-            cont = 0;
-        }
-        else
-            cont++;
+      control_ids[cont] = it->second->code;
+      spdlog::debug("Preparing for shutdown Led Code {0}", to_string(it->second->code));
+      if (((cont % 5) == 0) && (cont > 0)){
+          AlsaHelper::bulk_led_value(traktor_device_id_, control_ids, Led::OFF, cont + 1);
+          cont = 0;
+      }
+      else
+          cont++;
     }
-    AlsaHelper::bulk_led_value(traktor_device_id, ctls, Led::OFF, cont + 1);
+    AlsaHelper::bulk_led_value(traktor_device_id_, control_ids, Led::OFF, cont + 1);
     spdlog::debug("[EvDevHelper::shutdown_buttons_leds] FINISHED");
 }

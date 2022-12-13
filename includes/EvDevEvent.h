@@ -21,8 +21,7 @@ public:
     __s32 value;
     timeval time;
     static const map<__u16, string> types;
-    static const map<__u16, string> codes;
-    void handle_with(RtMidiOut *midi_out, int, bool, bool, bool, bool);
+    void handle_with(RtMidiOut *midi_out, int controller_id, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd);
 };
 
 

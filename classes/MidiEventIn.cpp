@@ -34,6 +34,7 @@ map<char, MidiEventIn *> MidiEventIn::midi_in_mapping = {
       {0x10, new MidiEventIn( "91","135","91","135","-" ) },
       {0x11, new MidiEventIn( "92","136","92","136","-" ) },
       {0x12, new MidiEventIn( "93","137","93","137","-" ) },
+      {0x15, new MidiEventIn( "-","-","-","-","-" ) },
       {0x17, new MidiEventIn( "76","120","76","120","-" ) },
       {0x18, new MidiEventIn( "77","121","77","121","154" ) },
       {0x19, new MidiEventIn( "-","-","-","-","155" ) },
@@ -48,7 +49,10 @@ map<char, MidiEventIn *> MidiEventIn::midi_in_mapping = {
       {0x3E, new MidiEventIn( "25","38","51","64","-" ) },
       {0x3F, new MidiEventIn( "26","39","52","65","-" ) },
       {0x44, new MidiEventIn( "24","37","50","63","-" ) },
-      {0x46, new MidiEventIn( "16 17 18 19 20 21","29 30 31 32 33 34","42 43 44 45 46 47","55 56 57 58 59 60","-" ) }
+      {0x46, new MidiEventIn( "16 17 18 19 20 21","29 30 31 32 33 34","42 43 44 45 46 47","55 56 57 58 59 60","-" ) },
+      {0x50, new MidiEventIn( "-","-","-","-","-" ) }
+
+
 };
 
 string MidiEventIn::check_channel_value(unsigned char channel){

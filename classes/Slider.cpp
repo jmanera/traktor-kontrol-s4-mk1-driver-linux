@@ -8,8 +8,8 @@ map<int, Slider *> Slider::sliders_mapping = {
         {21, new Slider(21, "SLIDER PITCH CH1 / CH3", 0)},
         {22, new Slider(22, "SLIDER PITCH CH2 / CH4", 0)},
         {23, new Slider(23, "SLIDER CROSSFADER", 0)},
-        {24, new Slider(24, "KNOB MIC VOL FRONT", 0)},
-        {25, new Slider(25, "KNOB CUE MIX FRONT", 0)}
+        {24, new Slider(24, "KNOB MIC VOL FRONT", 0)}
+
 };
 
 Slider::Slider(int in_code, string in_name, int in_value){
@@ -26,7 +26,7 @@ Slider::Slider(){
 unsigned int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
-    spdlog::debug("[Slider::handle_event] Button named {0} performed with Code:{1} Value: {4}", name, code, value);
+    spdlog::debug("[Slider::handle_event] Slider named {0} performed with Code:{1} Value: {4}", name, code, value);
     spdlog::debug("[Slider::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Slider::handle_event] Creating message...");
     std::vector<unsigned char> message;

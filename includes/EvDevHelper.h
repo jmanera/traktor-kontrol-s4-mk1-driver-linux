@@ -31,20 +31,20 @@ class EvDevHelper{
 private:
     static vector<string> get_evdev_device();
 
-    static void shutdown_application(int);
+    static void shutdown_application(int signal_num);
 
 public:
     EvDevHelper(){
-      traktor_device_id = AlsaHelper::get_traktor_device();
-      if (traktor_device_id == -1){
+      traktor_device_id_ = AlsaHelper::get_traktor_device();
+      if (traktor_device_id_ == -1){
         spdlog::error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
         exit(EXIT_FAILURE);
       }
 
     }
-    static int traktor_device_id;
+    static int traktor_device_id_;
     static tuple<int, struct libevdev *> get_traktor_controller_device();
-    static void read_events_from_device(RtMidiOut *);
+    static void read_events_from_device(RtMidiOut *midi_out_port);
     static void initialize_buttons_leds();
     static void shutdown_buttons_leds();
     static void check_evdev_status();
