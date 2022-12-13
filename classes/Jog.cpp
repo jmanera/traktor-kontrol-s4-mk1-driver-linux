@@ -45,7 +45,6 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
         status = midi_event->tgl_on_shf_on_status_byte;
       }
     }
-
     else if ((midi_event->channel_byte == 0xb1) || (midi_event->channel_byte == 0xb3)){
       if (shift_ch2 == true && toggle_bd == false){
         channel = midi_event->tgl_off_shf_on_channel_byte;

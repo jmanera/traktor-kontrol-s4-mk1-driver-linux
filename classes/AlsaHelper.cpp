@@ -69,12 +69,12 @@ int AlsaHelper::get_traktor_device(){
 
     snd_ctl_t *handle = NULL;
     snd_ctl_card_info_t *info = NULL;
-    snd_pcm_info_t *pcminfo = NULL;
+    snd_pcm_info_t *p_pcm_info = NULL;
     snd_pcm_stream_t stream = SND_PCM_STREAM_CAPTURE;
     string card_id;
 
     snd_ctl_card_info_alloca (&info);
-    snd_pcm_info_alloca (&pcminfo);
+    snd_pcm_info_alloca (&p_pcm_info);
 
     if (snd_card_next (&card) < 0 || card < 0){
         spdlog::error("[AlsaHelper::show_control_id] ERROR Reading audio cards!");
@@ -90,10 +90,10 @@ int AlsaHelper::get_traktor_device(){
                     spdlog::debug("[AlsaHelper::show_control_id] Error reading device from: {0}. Continuing", card_id);
                     break;
                 }
-                snd_pcm_info_set_device (pcminfo, dev);
-                snd_pcm_info_set_subdevice (pcminfo, 0);
-                snd_pcm_info_set_stream (pcminfo, stream);
-                if (snd_ctl_pcm_info (handle, pcminfo) >= 0){
+                snd_pcm_info_set_device (p_pcm_info, dev);
+                snd_pcm_info_set_subdevice (p_pcm_info, 0);
+                snd_pcm_info_set_stream (p_pcm_info, stream);
+                if (snd_ctl_pcm_info (handle, p_pcm_info) >= 0){
                     snd_card_get_name (card, &name);
                     spdlog::debug("[AlsaHelper::show_control_id] Card Name: {0}", name);
                     if(strncmp(name, CARD_NAME, 32) == 0){

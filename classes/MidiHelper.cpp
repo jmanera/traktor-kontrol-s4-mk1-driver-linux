@@ -49,6 +49,7 @@ bool MidiHelper::close_output_port()
     pMidiOut->closePort();
     return true;
 }
+
 RtMidiErrorCallback MidiHelper::midi_in_error_callback(RtMidiError::Type type, const string &error_message, void *userData){
   auto sharedFileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("/tmp/traktor_kontrol_s4_logger_error.log");
   auto logger = std::make_shared<spdlog::logger>("traktor_kontrol_s4_logger_error", sharedFileSink);
@@ -206,71 +207,4 @@ vector<string> MidiHelper::explode(string& str, const char& ch) {
   if (!next.empty())
     result.push_back(next);
   return result;
-}
-
-int MidiHelper::get_key_letter(unsigned char channel, unsigned char value){
-  if (channel == 0xb0){
-    switch (value){
-      case 1:
-        return 96;
-      case 2:
-        return 97;
-      case 3:
-        return 97;
-      case 4:
-        return 98;
-      case 5:
-        return 98;
-      case 6:
-        return 99;
-      case 7:
-        return 99;
-      case 8:
-        return 100;
-      case 9:
-        return 94;
-      case 10:
-        return 94;
-      case 11:
-        return 95;
-      case 12:
-        return 95;
-      case 13:
-        return 96;
-      case 14:
-        return 96;
-      case 15:
-        return 97;
-      case 16:
-        return 97;
-      case 17:
-        return 98;
-      case 18:
-        return 99;
-      case 19:
-        return 99;
-      case 20:
-        return 100;
-      case 21:
-        return 100;
-      case 22:
-        return 94;
-      case 23:
-        return 95;
-      case 24:
-        return 95;
-      default:
-        return -1;
-    }
-  }
-  else if (channel == 0xb1){
-    return -1;
-  }
-  else if (channel == 0xb2){
-    return -1;
-  }
-  else if (channel == 0xb3){
-    return -1;
-  }
-  return -1;
 }

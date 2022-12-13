@@ -1,6 +1,7 @@
 #include "Knob.h"
 
 map<int, Knob *> Knob::knob_mapping = {
+    {25, new Knob(25, "KNOB CUE MIX FRONT", 0)},
     {28, new Knob(28, "DECK D FILTER", 0)},
     {44, new Knob(44, "DECK C FILTER", 0)},
     {36, new Knob(36, "DECK B FILTER", 0)},

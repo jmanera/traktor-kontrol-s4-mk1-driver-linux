@@ -1,5 +1,7 @@
 #include "MidiEventOut.h"
 
+using namespace std;
+
 MidiEventOut::MidiEventOut(unsigned char in_status_type,
                            unsigned char in_channel_byte,
                            string in_controller_type,
