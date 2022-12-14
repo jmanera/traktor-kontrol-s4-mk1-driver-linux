@@ -12,7 +12,7 @@ Linux driver based on the awesome work from blaxpot and Javi Fonseca on the Trak
 - **snd-usb-caiaq** Kernel Module
 
 ## Usage
-
+ 
 As a command line driver, you can use these parameters:
 - **--help** Show help information
 - **--logLevel** Set the log verbose level: info | debug currently
