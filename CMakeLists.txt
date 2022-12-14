@@ -19,6 +19,8 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         includes/AlsaHelper.h
         includes/ConfigHelper.h
         includes/MidiEventIn.h
+        includes/cxxopts.hpp
+        includes/UtilsHelper.h
         classes/Button.cpp
         classes/MidiHelper.cpp
         classes/EvDevHelper.cpp
@@ -31,6 +33,7 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         classes/AlsaHelper.cpp
         classes/ConfigHelper.cpp
         classes/MidiEventIn.cpp
+        classes/UtilsHelper.cpp
         main.cpp)
 
 target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi)

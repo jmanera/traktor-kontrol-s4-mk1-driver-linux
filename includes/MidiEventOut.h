@@ -8,7 +8,8 @@
 
 using namespace std;
 
-class MidiEventOut {
+class MidiEventOut
+{
 public:
     MidiEventOut(unsigned char status_type,
                  unsigned char channel_byte,
@@ -33,6 +34,5 @@ public:
     static map<int, MidiEventOut *> midi_mapping;
     static int get_time();
 };
-
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIEVENT_H

@@ -7,16 +7,21 @@
 
 using namespace std;
 
-class Slider {
-
-public:
-    Slider(int code, string name, int value);
+class Slider
+{
+ public:
+    Slider(int code,
+           string name,
+           int value);
     Slider();
-    int code;
+    int code, value;
     string name;
-    int value;
     static map<int, Slider *> sliders_mapping;
-    unsigned int handle_event(RtMidiOut *midi_out_port, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd);
+    unsigned int handle_event(RtMidiOut *midi_out_port,
+                              bool shift_ch1,
+                              bool shift_ch2,
+                              bool toggle_ac,
+                              bool toggle_bd);
 };
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_SLIDER_H

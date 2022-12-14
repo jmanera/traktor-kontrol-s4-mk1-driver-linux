@@ -5,8 +5,8 @@
 
 using namespace std;
 
-class MidiEventIn {
- private:
+class MidiEventIn
+{
  public:
   MidiEventIn(string control_channel_1,
               string control_channel_2,
@@ -21,7 +21,6 @@ class MidiEventIn {
   string control_channel_5;
 
   static map<char, MidiEventIn *> midi_in_mapping;
-
   string check_channel_value(unsigned char channel);
 };
 

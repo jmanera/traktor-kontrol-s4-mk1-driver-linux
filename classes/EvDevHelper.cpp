@@ -3,11 +3,19 @@
 
 using namespace std;
 
-int EvDevHelper::traktor_device_id_ = 0;
+int traktor_device_id_ = 0;
 bool shift_ch1 = false;
 bool shift_ch2 = false;
 bool toggle_ac = false;
 bool toggle_bd = false;
+
+EvDevHelper::EvDevHelper(){
+  traktor_device_id_ = AlsaHelper::get_traktor_device();
+  if (traktor_device_id_ == -1){
+    spdlog::error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
+    exit(EXIT_FAILURE);
+  }
+}
 
 vector<string> EvDevHelper::get_evdev_device(){
     string path = "/dev/input";

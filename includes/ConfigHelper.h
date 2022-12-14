@@ -3,10 +3,11 @@
 
 using namespace std;
 
-class ConfigHelper {
-private:
+class ConfigHelper
+{
+ private:
 
-public:
+ public:
 
 };
 
