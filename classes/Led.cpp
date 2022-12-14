@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const int Led::numbers[10][7] = {
+const int Led::numbers[10][Led::total_segments] = {
     {1,1,1,1,1,1,0},
     {0,0,0,0,1,1,0},
     {1,1,0,1,1,0,1},
@@ -15,10 +15,10 @@ const int Led::numbers[10][7] = {
     {0,0,1,1,1,1,1}
 };
 
-const int Led::ch1_digit1_led_numbers[7] = {94, 95, 96, 97, 98, 99, 100};
-const int Led::ch1_digit2_led_numbers[7] = {102, 103, 104, 105, 106, 107, 108};
-const int Led::ch2_digit1_led_numbers[7] = {138, 139, 140, 141, 142, 143, 144};
-const int Led::ch2_digit2_led_numbers[7] = {146, 147, 148, 149, 150, 151, 152};
+const int Led::ch1_digit1_led_numbers[Led::total_segments] = {94, 95, 96, 97, 98, 99, 100};
+const int Led::ch1_digit2_led_numbers[Led::total_segments] = {102, 103, 104, 105, 106, 107, 108};
+const int Led::ch2_digit1_led_numbers[Led::total_segments] = {138, 139, 140, 141, 142, 143, 144};
+const int Led::ch2_digit2_led_numbers[Led::total_segments] = {146, 147, 148, 149, 150, 151, 152};
 
 map<int, Led *> Led::leds_mapping = {
         {1, new Led(1, "QUANT INDICATOR", Led::OFF, false, false) },

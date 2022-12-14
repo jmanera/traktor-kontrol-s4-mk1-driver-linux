@@ -12,9 +12,12 @@
 
 using namespace std;
 
-class Jog {
-public:
-    Jog(int code, string name, int value);
+class Jog
+{
+ public:
+    Jog(int code,
+        string name,
+        int value);
     Jog();
     int code;
     string name;
@@ -23,7 +26,11 @@ public:
     int prev_control_value;
     int sensitivity;
     int updated;
-    unsigned int handle_event(RtMidiOut *midi_out_port, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd);
+    unsigned int handle_event(RtMidiOut *midi_out_port,
+                              bool shift_ch1,
+                              bool shift_ch2,
+                              bool toggle_ac,
+                              bool toggle_bd);
     static map<int, Jog *> jog_mapping;
     int get_value_jog();
 };

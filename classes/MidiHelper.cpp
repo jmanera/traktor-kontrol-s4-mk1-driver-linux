@@ -1,5 +1,4 @@
 #include "MidiHelper.h"
-#include "MidiEventIn.h"
 
 using namespace std;
 
@@ -80,13 +79,13 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
           logger->debug("[MidiHelper::midi_in_callback] Beat loop size received, Channel: {0} Status: {1} Value: {2} Loop Value: {3}", channel, status, value, loop_value);
           if ((channel == 0xb0) || (channel == 0xb2)){
             if (value <= 0x4){
-              AlsaHelper::set_led_value(data->traktor_device_id, 101, Led::ON);
+              AlsaHelper::set_led_value(data->traktor_device_id, Led::ch1_digit1_led_dot, Led::ON);
             }
             else{
-              AlsaHelper::set_led_value(data->traktor_device_id, 101, Led::OFF);
+              AlsaHelper::set_led_value(data->traktor_device_id, Led::ch1_digit1_led_dot, Led::OFF);
             }
-            for (int i = 94; i <= 108; i++){
-              if (i != 101)
+            for (int i = Led::ch1_digit1_led_numbers[0]; i <= Led::ch1_digit2_led_numbers[Led::total_segments - 1]; i++){
+              if (i != Led::ch1_digit1_led_dot)
                 AlsaHelper::set_led_value(data->traktor_device_id, i, Led::OFF);
             }
             for (int i = 0; i < 7; i++){
@@ -98,33 +97,33 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
           }
           else if ((channel == 0xb1) || (channel == 0xb3)){
             if (value <= 0x4){
-              AlsaHelper::set_led_value(data->traktor_device_id, 145, Led::ON);
+              AlsaHelper::set_led_value(data->traktor_device_id, Led::ch2_digit1_led_dot, Led::ON);
             }
             else{
-              AlsaHelper::set_led_value(data->traktor_device_id, 145, Led::OFF);
+              AlsaHelper::set_led_value(data->traktor_device_id, Led::ch2_digit1_led_dot, Led::OFF);
             }
-            for (int i = 138; i <= 152; i++){
-              if (i != 145)
+            for (int i = Led::ch2_digit1_led_numbers[0]; i <= Led::ch2_digit2_led_numbers[Led::total_segments - 1]; i++){
+              if (i != Led::ch2_digit1_led_dot)
                 AlsaHelper::set_led_value(data->traktor_device_id, i, Led::OFF);
             }
-            for (int i = 0; i < 7; i++){
+            for (int i = 0; i < Led::total_segments; i++){
               segments_to_show_units[i] = Led::numbers[units][i] * Led::ch2_digit2_led_numbers[i];
             }
-            for (int i = 0; i < 7; i++){
+            for (int i = 0; i < Led::total_segments; i++){
               segments_to_show_tens[i] = Led::numbers[tens][i] * Led::ch2_digit1_led_numbers[i];
             }
           }
 
           logger->debug("[MidiHelper::midi_in_callback] Beat loop size received, Channel: {0} Units Values: {1} {2} {3} {4} {5} {6} {7}", channel, segments_to_show_units[0], segments_to_show_units[1], segments_to_show_units[2], segments_to_show_units[3], segments_to_show_units[4], segments_to_show_units[5], segments_to_show_units[6]);
           logger->debug("[MidiHelper::midi_in_callback] Beat loop size received, Channel: {0} Tens Values:  {1} {2} {3} {4} {5} {6} {7}", channel, segments_to_show_tens[0], segments_to_show_tens[1], segments_to_show_tens[2], segments_to_show_tens[3], segments_to_show_tens[4], segments_to_show_tens[5], segments_to_show_tens[6]);
-          AlsaHelper::bulk_led_value(data->traktor_device_id, segments_to_show_units, Led::ON, 7);
-          AlsaHelper::bulk_led_value(data->traktor_device_id, segments_to_show_tens, Led::ON, 7);
+          AlsaHelper::bulk_led_value(data->traktor_device_id, segments_to_show_units, Led::ON, Led::total_segments);
+          AlsaHelper::bulk_led_value(data->traktor_device_id, segments_to_show_tens, Led::ON, Led::total_segments);
           return NULL;
         }
         string control_id = it->second->check_channel_value(channel);
         int full_brightness = 0;
         if ((control_id != "-") && control_id.length() > 3){
-          vector<string> control_array = explode(control_id, ' ');
+          vector<string> control_array = UtilsHelper::explode(control_id, ' ');
           if (value > 1){
             int light = value - 1;
             full_brightness = floor(light / 21);
@@ -187,24 +186,4 @@ void MidiHelper::show_midi_information(MidiHelper *rtmidi_helper){
         }
         spdlog::debug("[RtMidiHelper::show_midi_information]    Output Port #{0}: {1}", i+1, portName);
     }
-}
-
-vector<string> MidiHelper::explode(string& str, const char& ch) {
-  string next;
-  vector<string> result;
-
-  for (string::const_iterator it = str.begin(); it != str.end(); it++) {
-    if (*it == ch) {
-      if (!next.empty()) {
-        result.push_back(next);
-        next.clear();
-      }
-    }
-    else {
-      next += *it;
-    }
-  }
-  if (!next.empty())
-    result.push_back(next);
-  return result;
 }

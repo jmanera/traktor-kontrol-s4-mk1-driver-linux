@@ -24,25 +24,16 @@
 #include "Knob.h"
 #include "EvDevEvent.h"
 #include "AlsaHelper.h"
+#include "UtilsHelper.h"
 
 using namespace std;
 
-class EvDevHelper{
-private:
+class EvDevHelper
+{
+ private:
     static vector<string> get_evdev_device();
-
-    static void shutdown_application(int signal_num);
-
-public:
-    EvDevHelper(){
-      traktor_device_id_ = AlsaHelper::get_traktor_device();
-      if (traktor_device_id_ == -1){
-        spdlog::error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
-        exit(EXIT_FAILURE);
-      }
-
-    }
-    static int traktor_device_id_;
+ public:
+    EvDevHelper();
     static tuple<int, struct libevdev *> get_traktor_controller_device();
     static void read_events_from_device(RtMidiOut *midi_out_port);
     static void initialize_buttons_leds();
