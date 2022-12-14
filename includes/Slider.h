@@ -1,7 +1,10 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_SLIDER_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_SLIDER_H
+
+// --------------------------
 #include <string>
 #include <map>
+// --------------------------
 #include "MidiEventOut.h"
 #include "MidiHelper.h"
 

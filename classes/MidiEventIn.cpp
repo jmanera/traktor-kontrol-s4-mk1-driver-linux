@@ -1,7 +1,3 @@
-//
-// Created by aspgems on 2/12/22.
-//
-
 #include "MidiEventIn.h"
 
 using namespace std;

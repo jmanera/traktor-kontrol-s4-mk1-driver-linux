@@ -1,13 +1,15 @@
 #include "Button.h"
 
+#include <utility>
+
 map<int, Button *> Button::buttons_mapping = {
-        { 256, new Button(256, "CH1_HOTCUE_1", 66, 1, 0) },
+        { 256, new Button(256, "CH1_HOT-CUE_1", 66, 1, 0) },
         { 257, new Button(257, "CH1_SHIFT", 78, 1, 0) },
-        { 258, new Button(258, "CH1_HOTCUE_2", 68, 1, 0) },
+        { 258, new Button(258, "CH1_HOT-CUE_2", 68, 1, 0) },
         { 259, new Button(259, "CH1_SYN", 79, 1, 0) },
-        { 260, new Button(260, "CH1_HOTCUE_3", 70, 1, 0) },
+        { 260, new Button(260, "CH1_HOT-CUE_3", 70, 1, 0) },
         { 261, new Button(261, "CH1_CUE", 80, 1, 0) },
-        { 262, new Button(262, "CH1_HOTCUE_4", 72, 1, 0) },
+        { 262, new Button(262, "CH1_HOT-CUE_4", 72, 1, 0) },
         { 263, new Button(263, "CH1_PLAY", 81, 1, 0) },
         { 264, new Button(264, "CH1_CHANGE_DECK", 86, 1, 0) },
         { 265, new Button(265, "CH1_SAMPLE_1", 90, 1, 0) },
@@ -46,13 +48,13 @@ map<int, Button *> Button::buttons_mapping = {
         { 309, new Button(309, "CH2_SAMPLE_3", 136, 2, 0) },
         { 310, new Button(310, "CH2_LOAD", 118, 2, 0) },
         { 311, new Button(311, "CH2_SAMPLE_4", 137, 2, 0) },
-        { 312, new Button(312, "CH2_HOTCUE_1", 110, 2, 0) },
+        { 312, new Button(312, "CH2_HOT-CUE_1", 110, 2, 0) },
         { 313, new Button(313, "CH2_SHIFT", 122, 2, 0) },
-        { 314, new Button(314, "CH2_HOTCUE_2", 112, 2, 0) },
+        { 314, new Button(314, "CH2_HOT-CUE_2", 112, 2, 0) },
         { 315, new Button(315, "CH2_SYNC", 123, 2, 0) },
-        { 316, new Button(316, "CH2_HOTCUE_3", 114, 2, 0) },
+        { 316, new Button(316, "CH2_HOT-CUE_3", 114, 2, 0) },
         { 317, new Button(317, "CH2_CUE", 124, 2, 0) },
-        { 318, new Button(318, "CH2_HOTCUE_4", 116, 2, 0) },
+        { 318, new Button(318, "CH2_HOT-CUE_4", 116, 2, 0) },
         { 319, new Button(319, "CH2_PLAY", 125, 2, 0) },
         { 321, new Button(321, "FX1_DRY_WET", 154, 1, 0) },
         { 322, new Button(322, "FX1_1", 155, 1, 0) },
@@ -61,14 +63,14 @@ map<int, Button *> Button::buttons_mapping = {
         { 325, new Button(325, "FX1_MODE", 158, 1, 0) },
         { 326, new Button(326, "CH3_GAIN", -1, 3, 0) },
         { 327, new Button(327, "CH1_GAIN", -1, 1, 1) },
-        { 328, new Button(328, "BTN_TOOL_QUINTTAP", -1, 1, 0) },
+        { 328, new Button(328, "BTN_TOOL_QUINT_TAP", -1, 1, 0) },
         { 329, new Button(329, "BTN_STYLUS3", -1, 1, 0) },
         { 330, new Button(330, "CH1_FX_CHANNEL_1", 25, 1, 0) },
         { 331, new Button(331, "CH1_FX_CHANNEL_2", 26, 1, 0) },
         { 332, new Button(332, "CH2_FX_CHANNEL_1", 38, 2, 0) },
         { 333, new Button(333, "CH2_FX_CHANNEL_2", 39, 2, 0) },
-        { 334, new Button(334, "BTN_TOOL_TRIPLETAP", 39, 2, 0) },
-        { 335, new Button(335, "BTN_TOOL_QUADTAP", 39, 2, 0) },
+        { 334, new Button(334, "BTN_TOOL_TRIPLE_TAP", 39, 2, 0) },
+        { 335, new Button(335, "BTN_TOOL_QUAD_TAP", 39, 2, 0) },
         { 345, new Button(345, "FX2_DRY_WET", 159, 2, 0) },
         { 346, new Button(346, "FX2_1", 160, 2, 0) },
         { 347, new Button(347, "FX2_2", 161, 2, 0) },
@@ -80,7 +82,7 @@ map<int, Button *> Button::buttons_mapping = {
 
 Button::Button(int in_code, string in_name, int in_led, int in_channel, int in_value = 0) {
   code = in_code;
-  name = in_name;
+  name = std::move(in_name);
   led_code = in_led;
   channel = in_channel;
   value = 0;
@@ -97,50 +99,12 @@ unsigned int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool s
     spdlog::debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
     spdlog::debug("[Button::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Button::handle_event] Creating message...");
-    int channel = -1, status = -1;
-    if ((midi_event->channel_byte == 0xb0) || (midi_event->channel_byte == 0xb2)){
-      if (shift_ch1 == true && toggle_ac == false){
-        channel = midi_event->tgl_off_shf_on_channel_byte;
-        status = midi_event->tgl_off_shf_on_status_byte;
-      }
-      if (shift_ch1 == false && toggle_ac == true){
-        channel = midi_event->tgl_on_shf_off_channel_byte;
-        status = midi_event->tgl_on_shf_off_status_byte;
-      }
-      if (shift_ch1 == true && toggle_ac == true){
-        channel = midi_event->tgl_on_shf_on_channel_byte;
-        status = midi_event->tgl_on_shf_on_status_byte;
-      }
-    }
 
-    else if ((midi_event->channel_byte == 0xb1) || (midi_event->channel_byte == 0xb3)){
-      if (shift_ch2 == true && toggle_bd == false){
-        channel = midi_event->tgl_off_shf_on_channel_byte;
-        status = midi_event->tgl_off_shf_on_status_byte;
-      }
-      if (shift_ch2 == false && toggle_bd == true){
-        channel = midi_event->tgl_on_shf_off_channel_byte;
-        status = midi_event->tgl_on_shf_off_status_byte;
-      }
-      if (shift_ch2 == true && toggle_bd == true){
-        channel = midi_event->tgl_on_shf_on_channel_byte;
-        status = midi_event->tgl_on_shf_on_status_byte;
-      }
-    }
+    auto message = UtilsHelper::create_message(shift_ch1, shift_ch2, toggle_ac, toggle_bd, midi_event, value);
 
-    if (channel == -1){
-      channel = midi_event->channel_byte;
-    }
-
-    if (status == -1){
-      status = midi_event->status_byte;
-    }
-    std::vector<unsigned char> message;
-    message.push_back(channel);
-    message.push_back(status);
-    message.push_back(value);
     spdlog::debug("[Button::handle_event] Message created!");
-    spdlog::debug("[Button::handle_event] Sending to MIDI Outport....");
+    spdlog::debug("[Button::handle_event] Sending to MIDI out port....");
+
     try{
       midi_out->sendMessage(&message);
     }

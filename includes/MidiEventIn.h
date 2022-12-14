@@ -1,7 +1,9 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_CLASSES_MIDIEVENTIN_H_
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_CLASSES_MIDIEVENTIN_H_
 
+// --------------------------
 #include <map>
+// --------------------------
 
 using namespace std;
 

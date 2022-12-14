@@ -1,9 +1,11 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_KNOB_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_KNOB_H
 
+// --------------------------
 #include <string>
 #include <map>
 #include <chrono>
+// --------------------------
 #include "MidiEventOut.h"
 #include "MidiHelper.h"
 
@@ -14,7 +16,6 @@ class Knob
  private:
     int get_value_gain_rot();
     int get_value_rot();
-    int get_value_browser_rot();
 
  public:
     Knob(int code,
