@@ -1,10 +1,12 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIEVENT_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIEVENT_H
 
+// --------------------------
 #include <string>
 #include <map>
 #include <unistd.h>
 #include <chrono>
+// --------------------------
 
 using namespace std;
 

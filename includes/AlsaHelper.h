@@ -1,11 +1,14 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTAUDIOHELPER_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTAUDIOHELPER_H
 
+// --------------------------
 #include <string>
 #include <rtaudio/RtAudio.h>
 #include <alsa/asoundlib.h>
+// --------------------------
 #include "Led.h"
 #include "spdlog/spdlog.h"
+#include "ConfigHelper.h"
 
 using namespace std;
 
@@ -18,7 +21,7 @@ class AlsaHelper
  public:
     static int set_led_value(int card_id, int control_id, int led_value);
     static int bulk_led_value(int card_id, int control_ids[], int led_value, int num_controls);
-    static int get_traktor_device();
+    static int get_traktor_device(ConfigHelper *config);
 
 };
 

@@ -1,8 +1,10 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_BUTTON_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_BUTTON_H
 
+// --------------------------
 #include <string>
 #include <map>
+// --------------------------
 #include "Led.h"
 #include "AlsaHelper.h"
 #include "MidiEventOut.h"
@@ -24,7 +26,7 @@ class Button
     int led_code;
     int channel;
     int value;
-    bool hold;
+    bool hold{};
     static map<int, Button *> buttons_mapping;
     unsigned int handle_event(RtMidiOut *midi_out_port,
                               int controller_id,

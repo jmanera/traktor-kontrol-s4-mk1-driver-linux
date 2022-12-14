@@ -1,10 +1,13 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIHELPER_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_RTMIDIHELPER_H
+
+// --------------------------
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <rtmidi/RtMidi.h>
 #include <sstream>
+// --------------------------
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "Button.h"
@@ -15,6 +18,7 @@
 #include "EvDevHelper.h"
 #include "UtilsHelper.h"
 #include "MidiEventIn.h"
+#include "ConfigHelper.h"
 
 using namespace std;
 
@@ -27,13 +31,15 @@ class MidiHelper
     static RtMidiErrorCallback midi_in_error_callback(RtMidiError::Type type,
                                                       const string &error_message,
                                                       void *user_data);
+    ConfigHelper *config_helper;
+
  public:
-    MidiHelper();
+    MidiHelper(ConfigHelper *config);
     RtMidiOut *pMidiOut = 0;
     RtMidiIn *pMidiIn = 0;
-    bool close_input_port();
-    bool close_output_port();
-    static void show_midi_information(MidiHelper *rtmidi_helper);
+    [[maybe_unused]] bool close_input_port() const;
+    [[maybe_unused]] bool close_output_port() const;
+    static void show_midi_information(MidiHelper *midi_helper);
     int traktor_device_id;
 };
 

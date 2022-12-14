@@ -28,48 +28,8 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
     spdlog::debug("[Jog::handle_event] Jog Wheel {0} with Code: {1} and Value {2}", name, code, value);
     spdlog::debug("[Jog::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
     spdlog::debug("[Jog::handle_event] Creating message...");
-    std::vector<unsigned char> message;
-    unsigned char channel = midi_event->channel_byte;
-    unsigned char status = midi_event->status_byte;
-    if ((midi_event->channel_byte == 0xb0) || (midi_event->channel_byte == 0xb2)){
-      if (shift_ch1 == true && toggle_ac == false){
-        channel = midi_event->tgl_off_shf_on_channel_byte;
-        status = midi_event->tgl_off_shf_on_status_byte;
-      }
-      if (shift_ch1 == false && toggle_ac == true){
-        channel = midi_event->tgl_on_shf_off_channel_byte;
-        status = midi_event->tgl_on_shf_off_status_byte;
-      }
-      if (shift_ch1 == true && toggle_ac == true){
-        channel = midi_event->tgl_on_shf_on_channel_byte;
-        status = midi_event->tgl_on_shf_on_status_byte;
-      }
-    }
-    else if ((midi_event->channel_byte == 0xb1) || (midi_event->channel_byte == 0xb3)){
-      if (shift_ch2 == true && toggle_bd == false){
-        channel = midi_event->tgl_off_shf_on_channel_byte;
-        status = midi_event->tgl_off_shf_on_status_byte;
-      }
-      if (shift_ch2 == false && toggle_bd == true){
-        channel = midi_event->tgl_on_shf_off_channel_byte;
-        status = midi_event->tgl_on_shf_off_status_byte;
-      }
-      if (shift_ch2 == true && toggle_bd == true){
-        channel = midi_event->tgl_on_shf_on_channel_byte;
-        status = midi_event->tgl_on_shf_on_status_byte;
-      }
-    }
-
-    if (channel == -1){
-      channel = midi_event->channel_byte;
-    }
-
-    if (status == -1){
-      status = midi_event->status_byte;
-    }
-    message.push_back(channel);
-    message.push_back(status);
     int midi_value = 0;
+
     if (midi_event->controller_type == "JOG_TOUCH"){
       if (value >= 3050){
         midi_value = 0x7f;
@@ -83,10 +43,12 @@ unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_c
       return 0;
     }
 
-    message.push_back(midi_value);
+    auto message = UtilsHelper::create_message(shift_ch1, shift_ch2, toggle_ac, toggle_bd, midi_event, (unsigned char)midi_value);
+
     spdlog::debug("[Jog::handle_event] Message Channel: {0} Status: {1} Value: {2}", message[0], message[1], message[2]);
     spdlog::debug("[Jog::handle_event] Message created!");
-    spdlog::debug("[Jog::handle_event] Sending to MIDI Outport....");
+    spdlog::debug("[Jog::handle_event] Sending to MIDI out port....");
+
     try{
       midi_out->sendMessage(&message);
     }
@@ -105,7 +67,6 @@ int Jog::get_value_jog(){
   if (prev_control_value == -1000){
     prev_control_value = value;
     updated = MidiEventOut::get_time();
-    spdlog::debug("[Jog::get_value_jog] First occurrence Updated: {0} Value: {1}", updated, prev_control_value);
     return -1000;
   }
 

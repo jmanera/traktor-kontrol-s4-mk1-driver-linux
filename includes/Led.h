@@ -1,8 +1,10 @@
 #ifndef TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_LED_H
 #define TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_LED_H
 
+// --------------------------
 #include <string>
 #include <map>
+// --------------------------
 
 using namespace std;
 
