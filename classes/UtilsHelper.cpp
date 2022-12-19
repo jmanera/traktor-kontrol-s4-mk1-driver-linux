@@ -77,6 +77,16 @@ std::vector<unsigned char> UtilsHelper::create_message(bool shift1, bool shift2,
       status = midi_event->tgl_on_shf_on_status_byte;
     }
   }
+  else if (midi_event->channel_byte == 0xb4){
+    if (shift1 == true){
+      channel = midi_event->tgl_off_shf_on_channel_byte;
+      status = midi_event->tgl_off_shf_on_status_byte;
+    }
+    if (shift2 == true){
+      channel = midi_event->tgl_on_shf_on_channel_byte;
+      status = midi_event->tgl_on_shf_on_status_byte;
+    }
+  }
 
   if ((int)channel == -1){
     channel = midi_event->channel_byte;
@@ -179,7 +189,8 @@ bool UtilsHelper::show_static_leds(unsigned char value, int traktor_device_id, s
     if (value >= 1)
       AlsaHelper::set_led_value(traktor_device_id, control_id_num, Led::ON);
     else{
-      if ((control_id_num != 24) && (control_id_num != 37) && (control_id_num != 50) && (control_id_num != 63)){
+      std::vector<int> to_off = {24, 37, 50, 63, 67, 69, 71, 73, 111, 113, 115, 117};
+      if (!(std::find(to_off.begin(), to_off.end(), control_id_num) != to_off.end())){
         AlsaHelper::set_led_value(traktor_device_id, control_id_num, Led::MIDDLE);
       }
       else{

@@ -29,11 +29,11 @@ class Jog
     int prev_control_value;
     int sensitivity;
     int updated;
-    unsigned int handle_event(RtMidiOut *midi_out_port,
-                              bool shift_ch1,
-                              bool shift_ch2,
-                              bool toggle_ac,
-                              bool toggle_bd);
+    int handle_event(RtMidiOut *midi_out_port,
+                     bool shift_ch1,
+                     bool shift_ch2,
+                     bool toggle_ac,
+                     bool toggle_bd);
     static map<int, Jog *> jog_mapping;
     int get_value_jog();
 };

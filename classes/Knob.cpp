@@ -1,6 +1,7 @@
 #include "Knob.h"
 
 map<int, Knob *> Knob::knob_mapping = {
+    {24, new Knob(24, "KNOB MIC VOL FRONT", 0)},
     {25, new Knob(25, "KNOB CUE MIX FRONT", 0)},
     {28, new Knob(28, "DECK D FILTER", 0)},
     {44, new Knob(44, "DECK C FILTER", 0)},
@@ -49,7 +50,7 @@ Knob::Knob(int in_code, string in_name, int in_value){
   counter = prev_control_value = updated = -1;
 }
 
-unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd) {
+int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd) {
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Knob::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
@@ -91,7 +92,7 @@ unsigned int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_
 
     spdlog::debug("[Knob::handle_event] Sent!");
 
-    return -1;
+    return 0;
   }
   return 0;
 }

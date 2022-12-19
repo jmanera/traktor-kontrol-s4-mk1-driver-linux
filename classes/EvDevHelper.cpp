@@ -123,7 +123,6 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                 AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               spdlog::debug("[EvDevHelper::read_events_from_device] Deck toggle AC Changed: {0}", toggle_ac);
-              continue;
             }
             if ((ev.code == config_helper->get_int_value("alsa_device_toggle_bd_value")) && (ev.value == 1)){ // TOGGLE CH2 / CH4
               toggle_bd = !toggle_bd;
@@ -142,7 +141,6 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                 AlsaHelper::bulk_led_value(traktor_device_id_, to_off, Led::OFF, 4);
               }
               spdlog::debug("[EvDevHelper::read_events_from_device] Deck toggle BD Changed: {0}", toggle_bd);
-              continue;
             }
             spdlog::debug("[EvDevHelper::read_events_from_device] Event: TypeName: {0} - CodeName: {1} - Type: {2} - Code: {3} - Value: {4} - Time: {5}",
                        libevdev_event_type_get_name(ev.type),

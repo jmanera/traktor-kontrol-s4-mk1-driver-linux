@@ -18,11 +18,11 @@ Jog::Jog(int in_code, string in_name, int in_value){
   code = in_code;
   name = in_name;
   value = in_value;
-  sensitivity = 10;
+  sensitivity = 5;
   prev_control_value = -1000;
 }
 
-unsigned int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
+int Jog::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Jog::handle_event] Jog Wheel {0} with Code: {1} and Value {2}", name, code, value);
