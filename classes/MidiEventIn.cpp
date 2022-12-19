@@ -46,7 +46,11 @@ map<char, MidiEventIn *> MidiEventIn::midi_in_mapping = {
       {0x3F, new MidiEventIn( "26","39","52","65","-" ) },
       {0x44, new MidiEventIn( "24","37","50","63","-" ) },
       {0x46, new MidiEventIn( "16 17 18 19 20 21","29 30 31 32 33 34","42 43 44 45 46 47","55 56 57 58 59 60","-" ) },
-      {0x50, new MidiEventIn( "-","-","-","-","-" ) }
+      {0x50, new MidiEventIn( "-","-","-","-","-" ) },
+      {0x51, new MidiEventIn( "67","111","67","111","-" ) },
+      {0x52, new MidiEventIn( "69","113","69","113","-" ) },
+      {0x53, new MidiEventIn( "71","115","71","115","-" ) },
+      {0x54, new MidiEventIn( "73","117","73","117","-" ) }
 
 
 };

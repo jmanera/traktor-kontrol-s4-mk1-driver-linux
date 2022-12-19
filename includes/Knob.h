@@ -29,11 +29,11 @@ class Knob
     int prev_control_value;
     int updated;
     static map<int, Knob *> knob_mapping;
-    unsigned int handle_event(RtMidiOut *midi_out_port,
-                              bool shift_ch1,
-                              bool shift_ch2,
-                              bool toggle_ac,
-                              bool toggle_bd);
+    int handle_event(RtMidiOut *midi_out_port,
+                     bool shift_ch1,
+                     bool shift_ch2,
+                     bool toggle_ac,
+                     bool toggle_bd);
 };
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_KNOB_H

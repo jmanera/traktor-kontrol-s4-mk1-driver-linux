@@ -7,8 +7,7 @@ map<int, Slider *> Slider::sliders_mapping = {
         {19, new Slider(19, "SLIDER VOLUME CH3", 0)},
         {21, new Slider(21, "SLIDER PITCH CH1 / CH3", 0)},
         {22, new Slider(22, "SLIDER PITCH CH2 / CH4", 0)},
-        {23, new Slider(23, "SLIDER CROSS-FADER", 0)},
-        {24, new Slider(24, "KNOB MIC VOL FRONT", 0)}
+        {23, new Slider(23, "SLIDER CROSS-FADER", 0)}
 
 };
 
@@ -23,7 +22,7 @@ Slider::Slider(){
   name = "";
 }
 
-unsigned int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
+int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
     spdlog::debug("[Slider::handle_event] Slider named {0} performed with Code:{1} Value: {4}", name, code, value);
