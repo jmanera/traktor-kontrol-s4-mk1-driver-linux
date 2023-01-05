@@ -15,6 +15,7 @@ Linux driver based on the awesome work from blaxpot and Javi Fonseca on the Trak
  
 As a command line driver, you can use these parameters:
 - **--help** Show help information
+- **--logMode** Set the log mode: console | logfile (default) currently
 - **--logLevel** Set the log verbose level: info | debug currently
 - **--configFile** Set the path where the config file is. Based on JSON format and included in this repo: **config.json**
 

@@ -22,27 +22,28 @@ Slider::Slider(){
   name = "";
 }
 
-int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
+int Slider::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd, ConfigHelper *config_helper){
+  shared_ptr<spdlog::logger> logger = spdlog::get(config_helper->get_string_value("traktor_s4_logger_name"));
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
-    spdlog::debug("[Slider::handle_event] Slider named {0} performed with Code:{1} Value: {4}", name, code, value);
-    spdlog::debug("[Slider::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
-    spdlog::debug("[Slider::handle_event] Creating message...");
+    logger->debug("[Slider::handle_event] Slider named {0} performed with Code:{1} Value: {2}", name, code, value);
+    logger->debug("[Slider::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
+    logger->debug("[Slider::handle_event] Creating message...");
 
     auto message = UtilsHelper::create_message(shift_ch1, shift_ch2, toggle_ac, toggle_bd, midi_event, value);
 
-    spdlog::debug("[Slider::handle_event] Message created!");
-    spdlog::debug("[Slider::handle_event] Sending to MIDI out port....");
+    logger->debug("[Slider::handle_event] Message created!");
+    logger->debug("[Slider::handle_event] Sending to MIDI out port....");
 
     try{
       midi_out->sendMessage(&message);
     }
     catch (exception &e){
-      spdlog::error("[Slider::handle_event] Error sending message to MIDI out port: {0}", e.what());
+      logger->error("[Slider::handle_event] Error sending message to MIDI out port: {0}", e.what());
       return -1;
     }
 
-    spdlog::debug("[Slider::handle_event] Sent!");
+    logger->debug("[Slider::handle_event] Sent!");
   }
   return 0;
 }

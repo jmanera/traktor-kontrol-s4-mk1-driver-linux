@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(./classes)
 include_directories(./includes)
 
+add_compile_options(-lpthread)
+
 add_executable(traktor_kontrol_s4_mk1_driver_linux
         includes/Button.h
         includes/EvDevHelper.h
@@ -36,6 +38,4 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         classes/UtilsHelper.cpp
         main.cpp)
 
-target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi)
-target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libevdev.so.2)
-target_link_libraries(traktor_kontrol_s4_mk1_driver_linux libasound.so.2)
+target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi libevdev.so.2 libasound.so.2 libpthread.so.0)

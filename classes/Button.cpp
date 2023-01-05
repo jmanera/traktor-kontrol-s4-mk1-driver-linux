@@ -23,19 +23,19 @@ map<int, Button *> Button::buttons_mapping = {
         { 273, new Button(273, "CH1_TEMPO_DOWN", 83, 1, 0) },
         { 274, new Button(274, "CH1_KNOB_LOOP", -1, 1, 0) },
         { 275, new Button(275, "CH1_KNOB_TEMPO", -1, 1, 0) },
-        { 280, new Button(280, "LOOP_EDITOR_SIZE", 9, 2, 0) },
-        { 282, new Button(282, "LOOP_EDITOR_UNDO", 13, 2, 0) },
-        { 281, new Button(281, "LOOP_EDITOR_REC", 8, 2, 0) },
-        { 283, new Button(283, "LOOP_EDITOR_PLAY", 122, 2, 0) },
-        { 284, new Button(284, "BROWSE", 11, 2, 0) },
-        { 285, new Button(285, "SNAP", 7, 2, 0) },
-        { 286, new Button(286, "MASTER", 6, 2, 0) },
-        { 287, new Button(287, "QUANT", 10, 2, 0) },
+        { 280, new Button(280, "LOOP_EDITOR_SIZE", 9, 5, 0) },
+        { 282, new Button(282, "LOOP_EDITOR_UNDO", 13, 5, 0) },
+        { 281, new Button(281, "LOOP_EDITOR_REC", 8, 5, 0) },
+        { 283, new Button(283, "LOOP_EDITOR_PLAY", 122, 5, 0) },
+        { 284, new Button(284, "BROWSE", 11, 5, 0) },
+        { 285, new Button(285, "SNAP", 7, 5, 0) },
+        { 286, new Button(286, "MASTER", 6, 5, 0) },
+        { 287, new Button(287, "QUANT", 10, 5, 0) },
         { 288, new Button(288, "CH3_EARPHONES", 50, 3, 0) },
         { 289, new Button(289, "CH1_EARPHONES", 24, 1, 0) },
         { 290, new Button(290, "CH2_EARPHONES", 37, 2, 0) },
         { 291, new Button(291, "CH4_EARPHONES", 63, 4, 0) },
-        { 292, new Button(292, "BROWSE_KNOB", -1, 2, 0) },
+        { 292, new Button(292, "BROWSE_KNOB", -1, 5, 0) },
         { 296, new Button(296, "CH2_TEMPO_UP", 126, 2, 0) },
         { 297, new Button(297, "CH2_TEMPO_DOWN", 127, 2, 0) },
         { 298, new Button(298, "CH2_KNOB_LOOP", -1, 2, 0) },
@@ -93,26 +93,27 @@ Button::Button(){
   name = "";
 }
 
-int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd){
+int Button::handle_event(RtMidiOut *midi_out, int controller_id, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd, ConfigHelper *config_helper){
+  shared_ptr<spdlog::logger> logger = spdlog::get(config_helper->get_string_value("traktor_s4_logger_name"));
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
-    spdlog::debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
-    spdlog::debug("[Button::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
-    spdlog::debug("[Button::handle_event] Creating message...");
+    logger->debug("[Button::handle_event] Button named {0} performed with Code:{1} Led Code: {2} Channel: {3} Value: {4}", name, code, led_code, channel, value);
+    logger->debug("[Button::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
+    logger->debug("[Button::handle_event] Creating message...");
 
     auto message = UtilsHelper::create_message(shift_ch1, shift_ch2, toggle_ac, toggle_bd, midi_event, value);
 
-    spdlog::debug("[Button::handle_event] Message created!");
-    spdlog::debug("[Button::handle_event] Sending to MIDI out port....");
+    logger->debug("[Button::handle_event] Message created!");
+    logger->debug("[Button::handle_event] Sending to MIDI out port....");
 
     try{
       midi_out->sendMessage(&message);
     }
     catch (exception &e){
-      spdlog::error("[Button::handle_event] Error sending message to MIDI out port: {0}", e.what());
+      logger->error("[Button::handle_event] Error sending message to MIDI out port: {0}", e.what());
       return -1;
     }
-    spdlog::debug("[Button::handle_event] Sent!");
+    logger->debug("[Button::handle_event] Sent!");
   }
 
   return 0;

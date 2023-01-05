@@ -13,11 +13,12 @@ class callbackData{
 };
 
 MidiHelper::MidiHelper(ConfigHelper *config){
+  shared_ptr<spdlog::logger> logger = spdlog::get(config->get_string_value("traktor_s4_logger_name"));
   this->config_helper = config;
   try {
       traktor_device_id = AlsaHelper::get_traktor_device(config);
       if (traktor_device_id == -1){
-        spdlog::error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
+        logger->error("[EvDevHelper:EvDevHelper] Traktor Kontrol S4 Device not found.... Bye!");
         exit(EXIT_FAILURE);
       }
       pMidiIn = new RtMidiIn(RtMidi::UNSPECIFIED, config->get_string_value("midi_client_name"), config->get_int_value("midi_queue_size_limit"));
@@ -35,7 +36,7 @@ MidiHelper::MidiHelper(ConfigHelper *config){
       pMidiOut->openVirtualPort(config->get_string_value("midi_virtual_port_name"));
   }
   catch ( RtMidiError &error ) {
-      spdlog::error("[RtMidiHelper::RtMidiHelper] RtMidi Error: {0}", error.getMessage());
+    logger->error("[RtMidiHelper::RtMidiHelper] RtMidi Error: {0}", error.getMessage());
       exit(EXIT_FAILURE);
   }
 }
@@ -65,10 +66,8 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
     unsigned char channel = message->at(0);
     unsigned char status = message->at(1);
     unsigned char value = message->at(2);
+    shared_ptr<spdlog::logger> logger = spdlog::get(data->config->get_string_value("traktor_s4_logger_name"));
 
-    auto sharedFileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(data->config->get_string_value("midi_in_callback_log_file"));
-    auto logger = std::make_shared<spdlog::logger>(data->config->get_string_value("midi_in_callback_logger_name"), sharedFileSink);
-    logger->set_level(spdlog::level::debug);
     logger->debug("[MidiHelper::midi_in_callback] MIDI In callback received with message: Channel: {0} Status: {1} Value: {2}", channel, status, value);
 
     try {
@@ -86,7 +85,7 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
         string control_id = it->second->check_channel_value(channel);
 
         if ((control_id != "-") && control_id.length() > 3){
-          if (!UtilsHelper::show_vumeters_leds(value, data->traktor_device_id, control_id)){
+          if (!UtilsHelper::show_vumeters_leds(value, data->traktor_device_id, control_id, data->config)){
             logger->debug("[MidiHelper::midi_in_callback] Error processing vu meters: Channel: {0} Status: {1} Value: {2}", channel, status, value);
             return nullptr;
           }
@@ -95,7 +94,7 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
         }
         else{
           if (control_id != "-"){
-            if (!UtilsHelper::show_static_leds(value, data->traktor_device_id, control_id)){
+            if (!UtilsHelper::show_static_leds(value, data->traktor_device_id, control_id, data->config)){
               logger->debug("[MidiHelper::midi_in_callback] Error processing static Led: Channel: {0} Status: {1} Value: {2}", channel, status, value);
               return nullptr;
             }
@@ -110,29 +109,30 @@ RtMidiIn::RtMidiCallback MidiHelper::midi_in_callback(double deltatime, std::vec
   return nullptr;
 }
 
-void MidiHelper::show_midi_information(MidiHelper *midi_helper){
+void MidiHelper::show_midi_information(MidiHelper *midi_helper, ConfigHelper *config){
+    shared_ptr<spdlog::logger> logger = spdlog::get(config->get_string_value("traktor_s4_logger_name"));
     unsigned int nPorts = midi_helper->pMidiIn->getPortCount();
-    spdlog::debug("[RtMidiHelper::show_midi_information] There are {0} MIDI input sources available", nPorts);
+    logger->debug("[RtMidiHelper::show_midi_information] There are {0} MIDI input sources available", nPorts);
     std::string portName;
     for ( unsigned int i=0; i < nPorts; i++ ) {
         try {
             portName = midi_helper->pMidiIn->getPortName(i);
         }
         catch ( RtMidiError &error ) {
-            spdlog::error("[RtMidiHelper::show_midi_information] {0}", error.getMessage());
+          logger->error("[RtMidiHelper::show_midi_information] {0}", error.getMessage());
         }
-        spdlog::debug("[RtMidiHelper::show_midi_information]    Input Port #{0}: {1}", i+1, portName);
+        logger->debug("[RtMidiHelper::show_midi_information]    Input Port #{0}: {1}", i+1, portName);
     }
 
     nPorts = midi_helper->pMidiOut->getPortCount();
-    spdlog::debug("[RtMidiHelper::show_midi_information] There are {0} MIDI output sources available", nPorts);
+    logger->debug("[RtMidiHelper::show_midi_information] There are {0} MIDI output sources available", nPorts);
     for ( unsigned int i=0; i < nPorts; i++ ) {
         try {
             portName = midi_helper->pMidiOut->getPortName(i);
         }
         catch (RtMidiError &error) {
-            spdlog::error("[RtMidiHelper::show_midi_information] {0}", error.getMessage());
+          logger->error("[RtMidiHelper::show_midi_information] {0}", error.getMessage());
         }
-        spdlog::debug("[RtMidiHelper::show_midi_information]    Output Port #{0}: {1}", i+1, portName);
+        logger->debug("[RtMidiHelper::show_midi_information]    Output Port #{0}: {1}", i+1, portName);
     }
 }

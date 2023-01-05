@@ -1,5 +1,7 @@
 #include "Led.h"
 
+#include <utility>
+
 using namespace std;
 
 const int Led::numbers[10][Led::total_segments] = {
@@ -21,16 +23,16 @@ const int Led::ch2_digit1_led_numbers[Led::total_segments] = {138, 139, 140, 141
 const int Led::ch2_digit2_led_numbers[Led::total_segments] = {146, 147, 148, 149, 150, 151, 152};
 
 map<int, Led *> Led::leds_mapping = {
-        {1, new Led(1, "QUANT INDICATOR", Led::OFF, false, false) },
+        {1, new Led(1, "QUANT INDICATOR", Led::OFF, false) },
         {2, new Led(2, "HEADPHONE INDICATOR", Led::OFF, false, false) },
         {3, new Led(3, "MASTER INDICATOR", Led::OFF, false)},
-        {4, new Led(4, "SNAP INDICATOR", Led::OFF, false, false)},
+        {4, new Led(4, "SNAP INDICATOR", Led::OFF, false)},
         {5, new Led(5, "WARNING INDICATOR", Led::OFF, false, false)},
-        {6, new Led(6, "MASTER BUTTON", Led::OFF, false)},
-        {7, new Led(7, "SNAP BUTTON", Led::OFF, false)},
+        {6, new Led(6, "MASTER BUTTON", Led::OFF, false, false)},
+        {7, new Led(7, "SNAP BUTTON", Led::OFF, false, false)},
         {8, new Led(8, "REC", Led::OFF, false)},
         {9, new Led(9, "SIZE", Led::OFF, false)},
-        {10, new Led(10, "QUANT BUTTON", Led::OFF, false)},
+        {10, new Led(10, "QUANT BUTTON", Led::OFF, false, false)},
         {11, new Led(11, "BROWSE", Led::OFF, false)},
         {12, new Led(12, "PLAY", Led::OFF, false)},
         {13, new Led(13, "UNDO", Led::OFF, false)},
@@ -45,8 +47,8 @@ map<int, Led *> Led::leds_mapping = {
         {22, new Led(22, "CH1 VOL METER CLIP", Led::OFF, false, false)},
         {23, new Led(23, "CH1 ACTIVE", Led::OFF, false, true)},
         {24, new Led(24, "CH1 EARPHONES", Led::OFF, false, false)},
-        {25, new Led(25, "CH1 FX1 ENABLE", Led::OFF, false)},
-        {26, new Led(26, "CH1 FX2 ENABLE", Led::OFF, false)},
+        {25, new Led(25, "CH1 FX1 ENABLE", Led::OFF, false, false)},
+        {26, new Led(26, "CH1 FX2 ENABLE", Led::OFF, false, false)},
         {27, new Led(27, "CH2 >", Led::OFF, false)},
         {28, new Led(28, "CH2 <", Led::OFF, false)},
         {29, new Led(29, "CH2 VOL METER 1", Led::OFF, false, false)},
@@ -58,8 +60,8 @@ map<int, Led *> Led::leds_mapping = {
         {35, new Led(35, "CH2 VOL METER CLIP", Led::OFF, false, false)},
         {36, new Led(36, "CH2 ACTIVE", Led::OFF, false)},
         {37, new Led(37, "CH2 EARPHONES", Led::OFF, false, false)},
-        {38, new Led(38, "CH2 FX1 ENABLE", Led::OFF, false)},
-        {39, new Led(39, "CH2 FX2 ENABLE", Led::OFF, false)},
+        {38, new Led(38, "CH2 FX1 ENABLE", Led::OFF, false, false)},
+        {39, new Led(39, "CH2 FX2 ENABLE", Led::OFF, false, false)},
         {40, new Led(40, "CH3 >", Led::OFF, false, false)},
         {41, new Led(41, "CH3 <", Led::OFF, false, false)},
         {42, new Led(42, "CH3 VOL METER 1", Led::OFF, false, false)},
@@ -71,8 +73,8 @@ map<int, Led *> Led::leds_mapping = {
         {48, new Led(48, "CH3 VOL METER CLIP", Led::OFF, false, false)},
         {49, new Led(49, "CH3 ACTIVE", Led::OFF, false, false)},
         {50, new Led(50, "CH3 EARPHONES", Led::OFF, false, false)},
-        {51, new Led(51, "CH3 FX1 ENABLE", Led::OFF, false)},
-        {52, new Led(52, "CH3 FX2 ENABLE", Led::OFF, false)},
+        {51, new Led(51, "CH3 FX1 ENABLE", Led::OFF, false, false)},
+        {52, new Led(52, "CH3 FX2 ENABLE", Led::OFF, false, false)},
         {53, new Led(53, "CH4 >", Led::OFF, false, false)},
         {54, new Led(54, "CH4 <", Led::OFF, false, false)},
         {55, new Led(55, "CH1 VOL METER 1", Led::OFF, false, false)},
@@ -84,8 +86,8 @@ map<int, Led *> Led::leds_mapping = {
         {64, new Led(61, "CH1 VOL METER CLIP", Led::OFF, false, false)},
         {62, new Led(62, "CH4 ACTIVE", Led::OFF, false, false)},
         {63, new Led(63, "CH4 EARPHONES", Led::OFF, false, false)},
-        {64, new Led(64, "CH4 FX1 ENABLE", Led::OFF, false)},
-        {65, new Led(65, "CH4 FX2 ENABLE", Led::OFF, false)},
+        {64, new Led(64, "CH4 FX1 ENABLE", Led::OFF, false, false)},
+        {65, new Led(65, "CH4 FX2 ENABLE", Led::OFF, false, false)},
         {66, new Led(66, "CH1 / CH3 HOT-CUE 1 BLUE", Led::OFF, false, false)},
         {67, new Led(67, "CH1 / CH3 HOT-CUE 1 GREEN", Led::OFF, false, false)},
         {68, new Led(68, "CH1 / CH3 HOT-CUE 2 BLUE", Led::OFF, false, false)},
@@ -175,20 +177,20 @@ map<int, Led *> Led::leds_mapping = {
         {152, new Led(152, "CH2 / CH4 DIGIT8 G", Led::OFF, false, false)},
         {153, new Led(153, "CH2 / CH4 DIGIT9 DOT", Led::OFF, false, false)},
         {154, new Led(154, "FX1 DRY WET", Led::OFF, false)},
-        {155, new Led(155, "FX1 EFFECT 1", Led::OFF, false)},
-        {156, new Led(156, "FX1 EFFECT 2", Led::OFF, false)},
-        {157, new Led(157, "FX1 EFFECT 3", Led::OFF, false)},
+        {155, new Led(155, "FX1 EFFECT 1", Led::OFF, false, false)},
+        {156, new Led(156, "FX1 EFFECT 2", Led::OFF, false, false)},
+        {157, new Led(157, "FX1 EFFECT 3", Led::OFF, false, false)},
         {158, new Led(158, "FX1 MODE", Led::OFF, false)},
         {159, new Led(159, "FX2 DRY WET", Led::OFF, false)},
-        {160, new Led(160, "FX2 EFFECT 1", Led::OFF, false)},
-        {161, new Led(161, "FX2 EFFECT 2", Led::OFF, false)},
-        {162, new Led(162, "FX2 EFFECT 3", Led::OFF, false)},
+        {160, new Led(160, "FX2 EFFECT 1", Led::OFF, false, false)},
+        {161, new Led(161, "FX2 EFFECT 2", Led::OFF, false, false)},
+        {162, new Led(162, "FX2 EFFECT 3", Led::OFF, false, false)},
         {163, new Led(163, "FX2 MODE", Led::OFF, false)},
 };
 
 Led::Led(int in_code, string in_name, int in_value, bool in_is_meter, bool in_by_default) {
     code = in_code;
-    name = in_name;
+    name = std::move(in_name);
     value = in_value;
     is_meter = in_is_meter;
     by_default = in_by_default;

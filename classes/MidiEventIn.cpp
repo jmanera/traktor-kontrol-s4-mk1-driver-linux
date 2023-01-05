@@ -14,8 +14,10 @@ MidiEventIn::MidiEventIn(string in_control_channel_1,
   control_channel_5 = in_control_channel_5;
 }
 
-map<char, MidiEventIn *> MidiEventIn::midi_in_mapping = {
+const map<char, MidiEventIn *> MidiEventIn::midi_in_mapping = {
       {0x01, new MidiEventIn( "74","118","74","118","-") },
+      {0x02, new MidiEventIn( "-","-","-","-","10") },
+      {0x03, new MidiEventIn( "-","-","-","-","6") },
       {0x05, new MidiEventIn( "83","127","83","127","9" ) },
       {0x06, new MidiEventIn( "82","126","82","126","13" ) },
       {0x07, new MidiEventIn( "78","122","78","122","8" ) },
