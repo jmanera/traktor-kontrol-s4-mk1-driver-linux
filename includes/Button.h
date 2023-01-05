@@ -33,7 +33,8 @@ class Button
                     bool shift_ch1,
                     bool shift_ch2,
                     bool toggle_ac,
-                    bool toggle_bd);
+                    bool toggle_bd,
+                     ConfigHelper *config);
 };
 
 #endif //TRAKTOR_KONTROL_S4_MK1_DRIVER_LINUX_BUTTON_H

@@ -41,8 +41,8 @@ class EvDevHelper
     EvDevHelper(ConfigHelper *config);
     tuple<int, struct libevdev *> get_traktor_controller_device();
     void read_events_from_device(RtMidiOut *midi_out_port);
-    static void initialize_buttons_leds();
-    static void shutdown_buttons_leds();
+    static void initialize_buttons_leds(ConfigHelper *config_helper);
+    static void shutdown_buttons_leds(ConfigHelper *config_helper);
     void check_evdev_status();
 };
 

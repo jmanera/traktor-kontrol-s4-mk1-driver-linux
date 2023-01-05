@@ -29,9 +29,9 @@ map<int, Knob *> Knob::knob_mapping = {
     {51, new Knob(51, "FX2 DRY WET KNOB", 0)},
     {54, new Knob(54, "BROWSE KNOB", 0)},
     {55, new Knob(55, "CH1 / CH3 MOVE KNOB", 0)},
-    {56, new Knob(56, "CH1 / CH3 LOOP SIZE KNOB", 0)},
+    {56, new Knob(56, "CH1 / CH3 SIZE KNOB", 0)},
     {57, new Knob(57, "CH2 / CH4 MOVE KNOB", 0)},
-    {58, new Knob(58, "CH2 / CH4 LOOP SIZE KNOB", 0)},
+    {58, new Knob(58, "CH2 / CH4 SIZE KNOB", 0)},
     {59, new Knob(59, "CH1 GAIN KNOB", 0)},
     {60, new Knob(60, "CH2 GAIN KNOB", 0)},
     {61, new Knob(61, "CH3 GAIN KNOB", 0)},
@@ -50,17 +50,21 @@ Knob::Knob(int in_code, string in_name, int in_value){
   counter = prev_control_value = updated = -1;
 }
 
-int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd) {
+int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool toggle_ac, bool toggle_bd, ConfigHelper *config_helper) {
+  shared_ptr<spdlog::logger> logger = spdlog::get(config_helper->get_string_value("traktor_s4_logger_name"));
   if (MidiEventOut::midi_mapping.find(code) != MidiEventOut::midi_mapping.end()) {
     MidiEventOut *midi_event = MidiEventOut::midi_mapping[code];
-    spdlog::debug("[Knob::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
-    spdlog::debug("[Knob::handle_event] Creating message...");
+    logger->debug("[Knob::handle_event] Sending to MIDI with: Name: {0} Controller Type: {1} Status: {2} Channel: {3}", midi_event->name, midi_event->controller_type, midi_event->status_byte, midi_event->channel_byte);
+    logger->debug("[Knob::handle_event] Creating message...");
 
     if (midi_event->controller_type == "BROWSE_ROT") {
       value = get_value_rot();
     }
     else if (midi_event->controller_type == "ROT"){
       value = get_value_rot();
+    }
+    else if (midi_event->controller_type == "ROT_MOVE"){
+      value = get_value_rot_move();
     }
     else if (midi_event->controller_type == "GAIN_ROT"){
       value = get_value_gain_rot();
@@ -69,30 +73,51 @@ int Knob::handle_event(RtMidiOut *midi_out, bool shift_ch1, bool shift_ch2, bool
       value = floor(value / 32);
     }
 
-    if (value < 0){
-      spdlog::debug("[Knob::handle_event] Message didn't sent!");
+    if ((value < 0) && (midi_event->controller_type != "ROT_MOVE")){
+      logger->debug("[Knob::handle_event] Message didn't sent!");
       return -1;
     }
 
-    spdlog::debug("[Knob::handle_event] Knob named {0} performed with Code:{1} Value: {2}", name, code, value);
+    logger->debug("[Knob::handle_event] Knob named {0} performed with Code:{1} Value: {2}", name, code, value);
+    logger->debug("[Knob::handle_event] Knob named {0} performed with Code:{1} Value: {2} parsed", name, code, (unsigned char)value);
 
     auto message = UtilsHelper::create_message(shift_ch1, shift_ch2, toggle_ac, toggle_bd, midi_event, value);
 
-    spdlog::debug("[Knob::handle_event] Message created!");
-    spdlog::debug("[Knob::handle_event] Sending to MIDI Outport....");
-    spdlog::debug("[Knob::handle_event] Message {0} - {1} - {2}....", message[0], message[1], message[2]);
+    logger->debug("[Knob::handle_event] Message created!");
+    logger->debug("[Knob::handle_event] Sending to MIDI Outport....");
+    logger->debug("[Knob::handle_event] Message {0} - {1} - {2}....", message[0], message[1], message[2]);
 
     try{
       midi_out->sendMessage(&message);
     }
     catch (exception &e){
-      spdlog::error("[Knob::handle_event] Error sending message to MIDI out port: {0}", e.what());
+      logger->error("[Knob::handle_event] Error sending message to MIDI out port: {0}", e.what());
       return -1;
     }
 
-    spdlog::debug("[Knob::handle_event] Sent!");
+    logger->debug("[Knob::handle_event] Sent!");
 
     return 0;
+  }
+  return 0;
+}
+
+int Knob::get_value_rot_move(){
+  int diff = 0;
+  if (prev_control_value == -1){
+    prev_control_value = value;
+    updated = MidiEventOut::get_time();
+    return 0;
+  }
+
+  updated = MidiEventOut::get_time();
+  if (value > prev_control_value){
+    prev_control_value = value;
+    return 1;
+  }
+  else if (value < prev_control_value){
+    prev_control_value = value;
+    return -1;
   }
   return 0;
 }

@@ -12,6 +12,7 @@
 #include "MidiEventOut.h"
 #include "MidiHelper.h"
 #include "UtilsHelper.h"
+#include "ConfigHelper.h"
 
 using namespace std;
 
@@ -33,7 +34,8 @@ class Jog
                      bool shift_ch1,
                      bool shift_ch2,
                      bool toggle_ac,
-                     bool toggle_bd);
+                     bool toggle_bd,
+                     ConfigHelper *config);
     static map<int, Jog *> jog_mapping;
     int get_value_jog();
 };

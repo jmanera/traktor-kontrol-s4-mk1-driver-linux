@@ -39,7 +39,7 @@ class MidiHelper
     RtMidiIn *pMidiIn = 0;
     [[maybe_unused]] bool close_input_port() const;
     [[maybe_unused]] bool close_output_port() const;
-    static void show_midi_information(MidiHelper *midi_helper);
+    static void show_midi_information(MidiHelper *midi_helper, ConfigHelper *config);
     int traktor_device_id;
 };
 
