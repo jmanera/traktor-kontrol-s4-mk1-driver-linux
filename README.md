@@ -22,4 +22,20 @@ As a command line driver, you can use these parameters:
 ## Installation
 Installation process is pending, currently you only can download or clone the repo and compile with CMake (>3.16)
 
+## Build
+1. Install dependencies. The package names will depend on your Linux distribution.
+
+**Arch Linux**
+```
+pacman -Syu cmake alsa-lib rtaudio rtmidi libevdev
+```
+
+2. Build with `cmake`:
+```
+mkdir cmake-build-debug
+cd cmake-build-debug
+cmake ..
+cmake --build .
+```
+
 ## IN PROCESS
