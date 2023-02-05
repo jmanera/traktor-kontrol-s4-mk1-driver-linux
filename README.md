@@ -22,14 +22,14 @@ As a command line driver, you can use these parameters:
 ## Build
 1. Install dependencies. The package names will depend on your Linux distribution.
 
-**Ubuntu**
+**Debian/Ubuntu/Raspberry Pi OS**
 ```
 sudo apt install cmake cmake-extras libasound2 librtaudio-dev librtmidi-dev libevdev-dev
 ```
 
 **Arch Linux**
 ```
-pacman -Syu base-devel cmake alsa-lib rtaudio rtmidi libevdev
+sudo pacman -Syu base-devel cmake alsa-lib rtaudio rtmidi libevdev
 ```
 
 2. Build with `cmake`:
