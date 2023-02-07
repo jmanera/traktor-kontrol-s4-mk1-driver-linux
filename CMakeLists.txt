@@ -38,4 +38,11 @@ add_executable(traktor_kontrol_s4_mk1_driver_linux
         classes/UtilsHelper.cpp
         main.cpp)
 
-target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi libevdev.so.2 libasound.so.2 libpthread.so.0)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(PC_EVDEV libevdev REQUIRED)
+find_path(EVDEV_INCLUDE_DIR libevdev/libevdev.h
+          HINTS ${PC_EVDEV_INCLUDE_DIRS} ${PC_EVDEV_INCLUDEDIR})
+find_library(EVDEV_LIBRARY
+        NAMES evdev libevdev)
+include_directories(${EVDEV_INCLUDE_DIR})
+target_link_libraries(traktor_kontrol_s4_mk1_driver_linux rtmidi ${EVDEV_LIBRARY} libasound.so.2 libpthread.so.0)
