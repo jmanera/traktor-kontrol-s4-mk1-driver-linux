@@ -14,5 +14,6 @@
   "alsa_device_shift_ch1_value": 257,
   "alsa_device_shift_ch2_value": 313,
   "alsa_device_toggle_ac_value": 264,
-  "alsa_device_toggle_bd_value": 304
+  "alsa_device_toggle_bd_value": 304,
+  "performance_milliseconds": 200
 }
