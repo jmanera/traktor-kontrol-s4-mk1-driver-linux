@@ -27,7 +27,6 @@ int ConfigHelper::get_int_value(const string& key)
   }
   catch(...){
     cerr << key << endl;
-
   }
   return -1;
 }

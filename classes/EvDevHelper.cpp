@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "EvDevHelper.h"
 
 using namespace std;
@@ -88,6 +89,7 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
     logger->debug("[EvDevHelper::read_events_from_device] Reading events from {0}", config_helper->get_string_value("alsa_device_name"));
     struct libevdev *dev = nullptr;
     int rc = 1;
+    unsigned int time_to_wait = config_helper->get_int_value("performance_milliseconds");
 
     tie(rc, dev) = get_traktor_controller_device();
     if (rc < 0) {
@@ -99,6 +101,7 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
            libevdev_get_id_bustype(dev),
            libevdev_get_id_vendor(dev),
            libevdev_get_id_product(dev));
+
     do {
         struct input_event ev{};
         rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
@@ -170,10 +173,10 @@ void EvDevHelper::read_events_from_device(RtMidiOut *pMidiOut) {
                             ev.value,
                             ev.time.tv_sec);
             }
-
             auto *evdev_event = new EvDevEvent(ev.type, ev.code, ev.value, ev.time);
             evdev_event->handle_with(pMidiOut, traktor_device_id_, shift_ch1, shift_ch2, toggle_ac, toggle_bd, config_helper);
         }
+        usleep(time_to_wait);
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
 }
 
